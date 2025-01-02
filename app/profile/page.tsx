@@ -1,20 +1,35 @@
+"use client";
 import { redirect } from "next/navigation";
-import Users from "@/models/Users";
-import { connectToDatabase } from "@/lib/db";
 import Layout from "@/components/Layout";
 import { useSession } from "next-auth/react";
-export default async function ProfilePage() {
+import { useState, useEffect } from "react";
+import axios from "axios";
+import { UserTypes } from "@/lib/userTypes";
+
+export default function ProfilePage() {
   const { data: session } = useSession();
 
-  if (!session) {
-    redirect("/login");
-  }
+  const [users, setUsers] = useState<UserTypes[]>([]);
 
-  await connectToDatabase();
-  const user = await Users.findOne({ email: session.user?.email });
+  useEffect(() => {
+    const fetchUsers = async () => {
+      try {
+        const res = await axios.get("/api/users");
+        setUsers(res.data);
+      } catch (error) {
+        console.log(error);
+      }
+    };
+    fetchUsers();
+  }, []);
+
+  const user = users.find((user) => user.email === session?.user?.email);
 
   if (!user) {
     return <div>User not found</div>;
+  }
+  if (!session) {
+    redirect("/login");
   }
 
   return (

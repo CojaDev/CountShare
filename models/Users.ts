@@ -28,11 +28,31 @@ const UserSchema = new Schema({
     required: false,
     trim: true,
   },
-  countdowns: {
-    type: String,
-    required: false,
-    trim: true,
-  },
+  countdowns: [
+    {
+      id: {
+        type: String,
+        required: true,
+        trim: true,
+      },
+      name: {
+        type: String,
+        required: true,
+        trim: true,
+      },
+      description: {
+        type: String,
+        required: true,
+        trim: true,
+      },
+      jobImg: {
+        type: String,
+        required: false,
+        trim: true,
+      },
+      
+    },
+  ],
   pfp: {
     type: String,
     required: false,

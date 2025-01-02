@@ -1,8 +1,8 @@
 "use client";
 
-import { useState } from "react";
+import { useState, Suspense } from "react";
 import { signIn } from "next-auth/react";
-import { useRouter, useSearchParams } from "next/navigation";
+import { useRouter } from "next/navigation";
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -13,9 +13,6 @@ export default function LoginPage() {
   const [password, setPassword] = useState("");
   const [isLoading, setIsLoading] = useState(false);
   const router = useRouter();
-  const searchParams = useSearchParams();
-  const callbackUrl = searchParams.get("callbackUrl") || "/profile";
-  const error = searchParams.get("error");
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -31,14 +28,13 @@ export default function LoginPage() {
       const result = await signIn(provider, {
         ...credentials,
         redirect: false,
-        callbackUrl,
       });
 
       if (result?.error) {
         throw new Error(result.error);
       }
 
-      router.push(callbackUrl);
+      router.push("/profile");
     } catch (error) {
       console.error("Login error:", error);
     } finally {
@@ -53,13 +49,6 @@ export default function LoginPage() {
           <h3 className="text-2xl font-bold text-center">
             Login to your account
           </h3>
-          {error && (
-            <div className="mt-4 p-4 bg-red-50 text-red-500 rounded-md">
-              {error === "CredentialsSignin"
-                ? "Invalid email or password"
-                : "An error occurred during login"}
-            </div>
-          )}
           <form onSubmit={handleSubmit} className="mt-4">
             <div className="space-y-4">
               <div>
