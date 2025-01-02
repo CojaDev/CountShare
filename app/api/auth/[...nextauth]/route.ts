@@ -6,7 +6,7 @@ import { compare } from "bcrypt";
 import Users from "@/models/Users";
 import { connectToDatabase } from "@/lib/db";
 
-export const authOptions: NextAuthOptions = {
+const authOptions: NextAuthOptions = {
   providers: [
     CredentialsProvider({
       name: "Credentials",
