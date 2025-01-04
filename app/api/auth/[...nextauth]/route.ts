@@ -56,7 +56,7 @@ const authOptions: NextAuthOptions = {
             email: profile?.email,
             name: profile?.name,
             userID: Math.random().toString(36).substr(2, 9),
-            pfp: profile?.image,
+            pfp: profile?.image||'https://robohash.org/'+name+'?set=set5',
             dateCreated: new Date(),
           });
           await newUser.save();

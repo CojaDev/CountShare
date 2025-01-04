@@ -1,16 +1,13 @@
 interface Countdown {
     id: string;
-    name: string;
-    description: string;
-    jobImg?: string;
   }
-  
   export interface UserTypes {
     userID: string;
     name: string;
     email: string;
     password?: string;
     bio?: string;
+    premium: boolean;
     countdowns: Countdown[];
     pfp?: string;
     dateCreated: Date;

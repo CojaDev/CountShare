@@ -28,6 +28,12 @@ const UserSchema = new Schema({
     required: false,
     trim: true,
   },
+  premium: {
+    type: Boolean,
+    required: true,
+    default: false,
+  },
+
   countdowns: [
     {
       id: {
@@ -35,22 +41,6 @@ const UserSchema = new Schema({
         required: true,
         trim: true,
       },
-      name: {
-        type: String,
-        required: true,
-        trim: true,
-      },
-      description: {
-        type: String,
-        required: true,
-        trim: true,
-      },
-      jobImg: {
-        type: String,
-        required: false,
-        trim: true,
-      },
-      
     },
   ],
   pfp: {

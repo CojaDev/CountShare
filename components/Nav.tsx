@@ -13,9 +13,9 @@ export function Nav() {
   const { data: session } = useSession();
 
   return (
-    <nav className="bg-[#152932] text-white shadow-lg">
+    <nav className="bg-[#152932] text-white shadow-lg ">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="flex items-center justify-between h-20">
+        <div className="flex items-center justify-between h-[4.5rem]">
           <div className="flex items-center">
             <Link href="/" className="flex-shrink-0 flex gap-2 items-center">
               <span className="text-2xl font-bold text-[#00c2cb]">
@@ -35,7 +35,7 @@ export function Nav() {
             <Link href="/countdowns" passHref>
               <Button
                 variant="ghost"
-                className="text-white hover:text-[#00c2cb] transition-colors duration-200"
+                className="text-white hover:text-[#162932] transition-colors duration-200"
               >
                 Explore
               </Button>
@@ -50,12 +50,12 @@ export function Nav() {
                 <div className="relative">
                   <Button
                     variant="ghost"
-                    className={`flex  items-center -ml-1 size-10 text-lg text-white hover:bg-gray-100 ${
+                    className={`flex overflow-hidden  items-center -ml-1 size-10 text-lg text-white hover:bg-gray-100 ${
                       isDropdownOpen ? "bg-gray-100 text-black" : ""
                     }`}
                     onClick={() => setIsDropdownOpen(!isDropdownOpen)}
                   >
-                    <User className="size-10" />
+                    <User className="size-12 scale-[1.2]" />
                   </Button>
                   {isDropdownOpen && (
                     <div className="absolute left-0 mt-2 w-32 bg-white rounded-md shadow-lg py-1 z-10">
@@ -86,7 +86,7 @@ export function Nav() {
                 <Link href="/signup" passHref>
                   <Button
                     variant="ghost"
-                    className="text-white hover:text-[#00c2cb] transition-colors duration-200"
+                    className="text-white hover:text-[#162932] transition-colors duration-200"
                   >
                     Sign Up
                   </Button>
@@ -102,13 +102,13 @@ export function Nav() {
           <div className="md:hidden">
             <Button
               variant="ghost"
-              className="text-white"
+              className="text-white overflow-hidden rounded-full size-12"
               onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
             >
               {isMobileMenuOpen ? (
-                <X className="h-6 w-6" />
+                <X className="h-6 w-6 scale-[2]" />
               ) : (
-                <Menu className="h-6 w-6" />
+                <Menu className="h-6 w-6 scale-[2]" />
               )}
             </Button>
           </div>
@@ -117,10 +117,10 @@ export function Nav() {
       {isMobileMenuOpen && (
         <div className="md:hidden">
           <div className="px-2 pt-2 pb-3 space-y-1 sm:px-3">
-            <Link href="/countdowns" passHref>
+            <Link href="/ecountdowns" passHref>
               <Button
                 variant="ghost"
-                className="w-full text-left text-white hover:text-[#00c2cb] transition-colors duration-200"
+                className="w-full mb-1 text-left text-white hover:text-[#162932] transition-colors duration-200"
               >
                 Countdowns
               </Button>
@@ -128,21 +128,21 @@ export function Nav() {
             {session ? (
               <>
                 <Link href="/create-countdown" passHref>
-                  <Button className="w-full bg-[#00c2cb] text-white hover:bg-[#00a7af] transition-colors duration-200">
-                    New
+                  <Button className="w-full bg-[#00c2cb] text-white hover:bg-[#00a7af] transition-colors mb-1 duration-200">
+                    New Countdown
                   </Button>
                 </Link>
                 <Link href="/profile" passHref>
                   <Button
                     variant="ghost"
-                    className="w-full text-left text-white hover:text-[#00c2cb] transition-colors duration-200"
+                    className="w-full text-left text-white hover:text-[#162932] transition-colors duration-200"
                   >
                     Profile
                   </Button>
                 </Link>
                 <Button
                   variant="ghost"
-                  className="w-full text-left text-white hover:text-[#00c2cb] transition-colors duration-200"
+                  className="w-full text-left text-white hover:text-[#162932] transition-colors duration-200"
                   onClick={() => signOut()}
                 >
                   Log out
@@ -153,7 +153,7 @@ export function Nav() {
                 <Link href="/signup" passHref>
                   <Button
                     variant="ghost"
-                    className="w-full text-left text-white hover:text-[#00c2cb] transition-colors duration-200"
+                    className="w-full text-left text-white hover:text-[#162932] transition-colors duration-200"
                   >
                     Sign Up
                   </Button>

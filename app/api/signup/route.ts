@@ -24,8 +24,9 @@ export async function POST(req: Request) {
       password: hashedPassword,
       userID: Math.random().toString(36).substr(2, 9),
       name: name || 'New User',
+      premium:false,
       bio: bio || '',
-      pfp: pfp || 'https://picsum.photos/200',
+      pfp: pfp || 'https://robohash.org/'+name+'?set=set5',
       dateCreated: new Date(),
     });
 
