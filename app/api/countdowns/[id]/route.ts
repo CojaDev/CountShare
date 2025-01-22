@@ -3,7 +3,7 @@ import { connectToDatabase } from "@/lib/db"
 import Countdowns from "@/models/Countdowns"
 
 export async function GET(request: NextRequest, context: { params: { id: string } }) {
-  const { id } = context.params
+  const { id } = await context.params
 
   try {
     await connectToDatabase()
