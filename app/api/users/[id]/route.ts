@@ -31,7 +31,7 @@ export async function GET (request, { params }) {
     return NextResponse.json({ error: 'Internal Server Error' }, { status: 500 });
   }
 }
-export async function PUT(req: Request, { params }: { params: { id: string } }) {
+export async function PUT (request, { params }) {
 try {
     await connectToDatabase();
     const { name, email, bio, pfp, password } = await req.json();
@@ -54,7 +54,7 @@ try {
   }
 }
 
-export async function DELETE(req: Request, { params }: { params: { id: string } }) {
+export async function DELETE (request, { params }) {
   try {
 
     await connectToDatabase();
