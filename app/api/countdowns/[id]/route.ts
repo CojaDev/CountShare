@@ -2,7 +2,7 @@ import { type NextRequest, NextResponse } from "next/server"
 import { connectToDatabase } from "@/lib/db"
 import Countdowns from "@/models/Countdowns"
 
-export async function GET (request, { params }) {
+export async function GET (request:any, { params }:any) {
   const { id } = await params
 
   try {

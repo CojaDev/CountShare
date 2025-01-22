@@ -3,7 +3,7 @@ import { connectToDatabase } from '@/lib/db';
 import Users from '@/models/Users';
 import { hash } from 'bcrypt';
 
-export async function GET (request, { params }) {
+export async function GET (request:any, { params }:any) {
   try {
     await connectToDatabase();
     const user = await Users.findById(params.id);
@@ -31,7 +31,7 @@ export async function GET (request, { params }) {
     return NextResponse.json({ error: 'Internal Server Error' }, { status: 500 });
   }
 }
-export async function PUT (request, { params }) {
+export async function PUT (req:any, { params }:any) {
 try {
     await connectToDatabase();
     const { name, email, bio, pfp, password } = await req.json();
@@ -54,7 +54,7 @@ try {
   }
 }
 
-export async function DELETE (request, { params }) {
+export async function DELETE (request:any, { params }:any) {
   try {
 
     await connectToDatabase();
