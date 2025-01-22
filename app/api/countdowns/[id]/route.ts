@@ -2,10 +2,16 @@ import { NextResponse } from 'next/server';
 import { connectToDatabase } from '@/lib/db';
 import Countdowns from '@/models/Countdowns';
 
-export async function GET(req: Request, { params }: { params: { id: string } }) {
+// Update the type of the second parameter
+export async function GET(
+  req: Request,
+  context: { params: { id: string } }
+) {
   try {
     await connectToDatabase();
-    const countdown = await Countdowns.findById(params.id);
+
+    const { id } = context.params;
+    const countdown = await Countdowns.findById(id);
 
     if (!countdown) {
       return NextResponse.json({ error: 'Countdown not found' }, { status: 404 });
@@ -17,4 +23,3 @@ export async function GET(req: Request, { params }: { params: { id: string } }) 
     return NextResponse.json({ error: 'Internal Server Error' }, { status: 500 });
   }
 }
-
