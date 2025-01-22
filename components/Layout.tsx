@@ -1,12 +1,12 @@
 import { Nav } from "./Nav";
+import { Footer } from "./Footer";
 
-const Layout = ({ children }: { children: React.ReactNode }) => {
+export default function Layout({ children }: { children: React.ReactNode }) {
   return (
-    <>
+    <div className="flex flex-col min-h-screen">
       <Nav />
-      {children}
-    </>
+      <main className="flex-grow">{children}</main>
+      <Footer />
+    </div>
   );
-};
-
-export default Layout;
+}

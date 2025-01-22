@@ -1,20 +1,23 @@
 import type { Metadata } from "next";
-import { Geist, Geist_Mono, Poppins } from "next/font/google";
+import { Geist, Azeret_Mono as Geist_Mono } from "next/font/google";
+import { Poppins } from "next/font/google";
 import "./globals.css";
 import { AuthProvider } from "@/components/AuthProvider";
-
+import { Toaster } from "react-hot-toast";
 const geistSans = Geist({
   variable: "--font-geist-sans",
   subsets: ["latin"],
-});
-const popins = Poppins({
-  subsets: ["latin"],
-  weight: ["400", "500", "600", "700"],
 });
 
 const geistMono = Geist_Mono({
   variable: "--font-geist-mono",
   subsets: ["latin"],
+});
+
+const poppins = Poppins({
+  subsets: ["latin"],
+  weight: ["400", "500", "600", "700"],
+  variable: "--font-poppins",
 });
 
 export const metadata: Metadata = {
@@ -43,7 +46,7 @@ export const metadata: Metadata = {
     siteName: "CountShare",
     images: [
       {
-        url: "/public/logo.png",
+        url: "https://countshare.vercel.app/logo.png",
         width: 500,
         height: 500,
         alt: "CountShare - Share Countdown Timers",
@@ -58,11 +61,14 @@ export const metadata: Metadata = {
     title: "CountShare - Share Countdown Timers",
     description:
       "Join CountShare to create, share, and explore countdown timers. Perfect for tracking events and staying connected.",
-    images: ["/public/logo.png"],
+    images: ["https://countshare.vercel.app/logo.png"],
   },
   icons: {
-    icon: "/favicon.ico",
-    apple: "/logo.png",
+    icon: [
+      { url: "/favicon.ico", sizes: "any" },
+      { url: "/icon.svg", type: "image/svg+xml" },
+    ],
+    apple: [{ url: "/apple-icon.png", sizes: "180x180", type: "image/png" }],
   },
 };
 
@@ -73,7 +79,10 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en">
-      <body className={`${popins.className} antialiased`}>
+      <body
+        className={`${poppins.variable} ${geistSans.variable} ${geistMono.variable} font-sans antialiased`}
+      >
+        <Toaster />
         <AuthProvider>{children}</AuthProvider>
       </body>
     </html>

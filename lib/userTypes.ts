@@ -2,6 +2,7 @@ interface Countdown {
     id: string;
   }
   export interface UserTypes {
+    id?: string;
     userID: string;
     name: string;
     email: string;

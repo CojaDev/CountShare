@@ -1,88 +1,188 @@
-"use client";
-import Layout from "@/components/Layout";
-import { useSession } from "next-auth/react";
-import { useState, useEffect } from "react";
-import axios from "axios";
-import { UserTypes } from "@/lib/userTypes";
+"use client"
+
+import { useState, useEffect } from "react"
+import { useSession } from "next-auth/react"
+import { useRouter } from "next/navigation"
+import Layout from "@/components/Layout"
+import { ProfileHeader } from "@/components/ProfileHeader"
+import { ProfileSettings } from "@/components/ProfileSettings"
+import { CountdownGrid } from "@/components/CountdownGrid"
+import { Button } from "@/components/ui/button"
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
+import { Plus } from "lucide-react"
+import { toast } from "react-hot-toast"
 
 export default function ProfilePage() {
-  const { data: session } = useSession();
-
-  const [users, setUsers] = useState<UserTypes[]>([]);
+  const { data: session, status }: any = useSession()
+  const router = useRouter()
+  const [user, setUser] = useState<any>(null)
+  const [countdowns, setCountdowns] = useState([])
+  const [showSettings, setShowSettings] = useState(false)
+  const [activeTab, setActiveTab] = useState("countdowns")
 
   useEffect(() => {
-    if (!session) {
-      window.location.href = "/login";
+    if (status === "unauthenticated") {
+      router.push("/login")
+    } else if (status === "authenticated" && session?.user) {
+      fetchUserData()
     }
-  }, [session]);
+  }, [status, session])
 
-  useEffect(() => {
-    const fetchUsers = async () => {
-      try {
-        const res = await axios.get("/api/users");
-        setUsers(res.data);
-      } catch (error) {
-        console.log(error);
+  const fetchUserData = async () => {
+    try {
+      const response = await fetch(`/api/users/${session?.user.id}`)
+      const userData = await response.json()
+      setUser(userData)
+
+      if (userData.countdowns && userData.countdowns.length > 0) {
+        fetchUserCountdowns(userData.countdowns)
       }
-    };
-    fetchUsers();
-  }, []);
+    } catch (error) {
+      console.error("Error fetching user data:", error)
+    }
+  }
 
-  const user = users.find(
-    (user: UserTypes) => user.email === session?.user?.email
-  );
+  const fetchUserCountdowns = async (countdownIds: { id: string }[]) => {
+    try {
+      const countdownsData: any = await Promise.all(
+        countdownIds.map(async (count: { id: string }) => {
+          const response = await fetch(`/api/countdowns/${count.id}`)
+          if (!response.ok) {
+            throw new Error(`HTTP error! status: ${response.status}`)
+          }
+          return response.json()
+        }),
+      )
+      setCountdowns(countdownsData)
+    } catch (error) {
+      console.error("Error fetching countdowns:", error)
+    }
+  }
+
+  const handleSettingsSave = async (updatedUserData: any) => {
+    try {
+      const response = await fetch(`/api/users/${session?.user.id}`, {
+        method: "PUT",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(updatedUserData),
+      });
+      if (response.ok) {
+        setUser(updatedUserData);
+        toast.success("Settings updated successfully!");
+        setShowSettings(false);
+      } else {
+        throw new Error(`HTTP error! status: ${response.status}`);
+      }
+    } catch (error) {
+      console.error("Error updating user data:", error);
+    }
+  };
+
+  const handleAccountDelete = async () => {
+    try {
+      const response = await fetch(`/api/users/${session?.user.id}`, {
+        method: "DELETE",
+      })
+      if (response.ok) {
+        toast({
+          title: "Account deleted",
+          description: "Your account has been successfully deleted.",
+        })
+        router.push("/")
+      } else {
+        throw new Error(`HTTP error! status: ${response.status}`)
+      }
+    } catch (error) {
+      console.error("Error deleting account:", error)
+      toast({
+        title: "Error",
+        description: "Failed to delete account. Please try again.",
+        variant: "destructive",
+      })
+    }
+  }
+
+  const handleCountdownEdit = (id: string) => {
+    router.push(`/edit-countdown/${id}`)
+  }
+
+  const handleCountdownDelete = async (id: string) => {
+    try {
+      const response = await fetch(`/api/countdowns/${id}`, {
+        method: "DELETE",
+      })
+      if (response.ok) {
+        setCountdowns(countdowns.filter((countdown: any) => countdown.id !== id))
+        toast({
+          title: "Countdown deleted",
+          description: "Your countdown has been successfully deleted.",
+        })
+      } else {
+        throw new Error(`HTTP error! status: ${response.status}`)
+      }
+    } catch (error) {
+      console.error("Error deleting countdown:", error)
+      toast({
+        title: "Error",
+        description: "Failed to delete countdown. Please try again.",
+        variant: "destructive",
+      })
+    }
+  }
+
+  if (status === "loading" || !user) {
+    return <div>Loading...</div>
+  }
 
   return (
     <Layout>
-      <div className="container mx-auto p-4">
-        <div className="max-w-2xl mx-auto bg-white shadow-lg rounded-lg overflow-hidden">
-          <div className="p-8">
-            <div className="text-center">
-              <div className="p-1 size-32 flex justify-center items-center rounded-full mx-auto shadow bg-[#152932]">
-                <div className="w-full h-full rounded-full bg-white shadow">
-                  <img
-                    src={user?.pfp || "https://picsum.photos/200"}
-                    alt="Profile"
-                    draggable="false"
-                    className={`rounded-full  mx-auto mb-4 object-cover ${
-                      user?.pfp?.includes("https://robohash.org/")
-                        ? "w-32 h-32"
-                        : "w-full h-full"
-                    }`}
-                  />
-                </div>
+      <ProfileHeader
+        user={{
+          ...user,
+          joinDate: new Date(user.dateCreated).toLocaleDateString("en-US", {
+            month: "long",
+            year: "numeric",
+          }),
+        }}
+        isOwnProfile={true}
+        onEditProfile={() => setShowSettings(true)}
+      />
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+        <div className="grid grid-cols-1 gap-8">
+          <div className="w-full">
+            <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
+              <div className="flex justify-between items-center mb-4">
+                <TabsList>
+                  <TabsTrigger value="countdowns">Countdowns</TabsTrigger>
+                </TabsList>
+                <Button
+                  onClick={() => router.push("/create-countdown")}
+                  className="bg-[#00c2cb] hover:bg-[#00a7af] text-white"
+                >
+                  <Plus className="mr-2 h-4 w-4" /> New Countdown
+                </Button>
               </div>
-              <h1 className="text-2xl font-bold text-gray-800">{user?.name}</h1>
-              <p className="text-gray-600">{user?.email}</p>
-            </div>
-
-            <div className="mt-8 space-y-4">
-              <div className="border-t pt-4">
-                <h2 className="text-lg font-semibold text-gray-800">Bio</h2>
-                <p className="text-gray-600 mt-2">
-                  {user?.bio || "No bio added yet"}
-                </p>
-              </div>
-
-              <div className="border-t pt-4">
-                <h2 className="text-lg font-semibold text-gray-800">User ID</h2>
-                <p className="text-gray-600 mt-2">{user?.userID}</p>
-              </div>
-
-              <div className="border-t pt-4">
-                <h2 className="text-lg font-semibold text-gray-800">
-                  Member Since
-                </h2>
-                <p className="text-gray-600 mt-2">
-                  {user?.dateCreated
-                    ? new Date(user.dateCreated).toLocaleDateString()
-                    : "Date not available"}
-                </p>
-              </div>
-            </div>
+              <TabsContent value="countdowns">
+                <CountdownGrid
+                  countdowns={countdowns}
+                  isOwnProfile={true}
+                  onEdit={handleCountdownEdit}
+                  onDelete={handleCountdownDelete}
+                />
+              </TabsContent>
+            </Tabs>
           </div>
         </div>
       </div>
+      <ProfileSettings
+        user={user}
+        isCredentialsUser={!user.password}
+        onSave={handleSettingsSave}
+        onDelete={handleAccountDelete}
+        isOpen={showSettings}
+        onClose={() => setShowSettings(false)}
+      />
     </Layout>
-  );
+  )
 }
+

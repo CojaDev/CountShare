@@ -103,7 +103,7 @@ function DecorativeShape({ className }: { className: string }) {
 function StopwatchIcon({ className }: { className: string }) {
   return (
     <div className={`absolute select-none ${className}`}>
-      <span className="text-[#00c2cb] text-opacity-20 text-6xl font-light">
+      <span className="text-[#00c2cb] text-opacity-15 text-6xl font-light">
         ⏱
       </span>
     </div>
@@ -116,11 +116,12 @@ export function Hero() {
       className="bg-white text-[#152932] md:pt-28 pt-24 pb-24 relative overflow-hidden"
       style={{ minHeight: "90vh" }}
     >
-      <DecorativeShape className="top-10 left-10 opacity-20" />
+      <DecorativeShape className="top-72 left-10 opacity-20" />
       <DecorativeShape className="bottom-10 right-10 opacity-20" />
       <DecorativeShape className="top-1/4 right-[5%] opacity-10" />
       <DecorativeShape className="bottom-1/4 left-1/4 opacity-10" />
 
+      <StopwatchIcon className="top-20 left-20" />
       <StopwatchIcon className="top-20 right-20" />
       <StopwatchIcon className="bottom-20 left-20" />
       <StopwatchIcon className="top-1/2 left-1/3 transform -translate-y-1/2" />
@@ -136,9 +137,9 @@ export function Hero() {
                 key={countdown.id}
                 className="bg-gray-100 p-4 rounded-lg shadow-md hover:shadow-lg transition-shadow duration-300"
               >
-                <h3 className="text-[#00c2cb] font-semibold mb-2">
+                <h5 className="text-[#00c2cb] font-semibold mb-2">
                   {countdown.title}
-                </h3>
+                </h5>
                 <CountdownTimer endDate={countdown.endDate} />
               </div>
             ))}
