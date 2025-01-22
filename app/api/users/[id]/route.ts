@@ -3,7 +3,7 @@ import { connectToDatabase } from '@/lib/db';
 import Users from '@/models/Users';
 import { hash } from 'bcrypt';
 
-export async function GET(req: Request, { params }: { params: { id: string } }) {
+export async function GET (request, { params }) {
   try {
     await connectToDatabase();
     const user = await Users.findById(params.id);
