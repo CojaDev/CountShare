@@ -1,6 +1,6 @@
 "use client"
 
-import { useState } from "react"
+import { Suspense, useState } from "react"
 import { signIn } from "next-auth/react"
 import { useRouter, useSearchParams } from "next/navigation"
 import Link from "next/link"
@@ -47,6 +47,8 @@ export default function LoginPage() {
   }
 
   return (
+    <Suspense>
+      
     <Layout>
       <div className="flex items-center justify-center min-h-[90vh] bg-gray-100">
         <div className="px-8 py-6 mt-4 text-left bg-white shadow-lg rounded-lg w-full max-w-md">
@@ -84,7 +86,7 @@ export default function LoginPage() {
                   onChange={(e) => setPassword(e.target.value)}
                   required
                   className="mt-1"
-                />
+                  />
               </div>
               <div className="flex items-center justify-between">
                 <Button type="submit" className="bg-[#00c2cb] text-white w-full" disabled={isLoading}>
@@ -107,6 +109,7 @@ export default function LoginPage() {
         </div>
       </div>
     </Layout>
+  </Suspense>
   )
 }
 
