@@ -107,7 +107,7 @@ export default function CountdownPreview({
           <Maximize2 className="h-6 w-6" />
         </Button>
       )}
-      <div className="text-center p-8 max-w-3xl">
+      <div className="text-center p-8 max-w-3xl md:scale-100 scale-[0.65] md:mt-0 -mt-24">
         <h2 className="text-4xl font-bold mb-8" style={{ fontSize: `${fontSize}px` }}>{name || "Countdown Name"}</h2>
         <div className="flex justify-center space-x-4 mb-8">
           {Object.entries(timeLeft).map(([unit, value]) =>
@@ -126,9 +126,9 @@ export default function CountdownPreview({
       </div>
       {!isCard && (
 
-      <div className="absolute bottom-4 left-4 flex items-center space-x-2">
+      <div className="absolute bottom-4 left-4 flex items-center space-x-2 md:scale-100 scale-95">
         <Link href={`/profile/${createdBy.id}`}>
-          <Button variant="ghost" size="sm" className="text-white bg-black bg-opacity-50 hover:bg-opacity-75">
+          <Button variant="ghost" size="sm" className="text-white bg-black bg-opacity-50 h-[1.8rem] hover:bg-opacity-75">
             <User className="h-4 w-4 mr-2" />
             {createdBy.name}
           </Button>
@@ -138,7 +138,7 @@ export default function CountdownPreview({
       )}
       {isPublic && !isCard && (
         <div className="absolute bottom-4 right-4">
-          <span className="text-sm bg-green-500 text-white px-2 py-1 rounded">
+          <span className="text-sm bg-green-500 text-white px-2.5 py-1.5  rounded">
             Public
           </span>
         </div>

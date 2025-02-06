@@ -92,7 +92,7 @@ const CountdownsPage = () => {
 
   return (
     <Layout>
-      <div className="container mx-auto px-4 py-8">
+      <div className="container mx-auto px-4 py-10">
         <h1 className="text-4xl font-bold mb-8 text-center text-gray-800">Explore Countdowns</h1>
         <div className="flex flex-col md:flex-row justify-between items-center mb-8 space-y-4 md:space-y-0 md:space-x-4">
           <div className="relative w-full md:w-1/2">

@@ -6,7 +6,8 @@ import { hash } from 'bcrypt';
 export async function GET (request:any, { params }:any) {
   try {
     await connectToDatabase();
-    const user = await Users.findById(params.id);
+    const { id } = await params
+    const user = await Users.findById(id);
 
     if (!user) {
       return NextResponse.json({ error: 'User not found' }, { status: 404 });
@@ -34,6 +35,7 @@ export async function GET (request:any, { params }:any) {
 export async function PUT (req:any, { params }:any) {
 try {
     await connectToDatabase();
+    const { id } = await params
     const { name, email, bio, pfp, password } = await req.json();
 
     const updateData: any = { name, email, bio, pfp };
@@ -41,7 +43,7 @@ try {
       updateData.password = await hash(password, 10);
     }
 
-    const updatedUser = await Users.findByIdAndUpdate(params.id, updateData, { new: true });
+    const updatedUser = await Users.findByIdAndUpdate(id, updateData, { new: true });
 
     if (!updatedUser) {
       return NextResponse.json({ error: 'User not found' }, { status: 404 });
@@ -56,9 +58,9 @@ try {
 
 export async function DELETE (request:any, { params }:any) {
   try {
-
     await connectToDatabase();
-    const deletedUser = await Users.findByIdAndDelete(params.id);
+    const { id } = await params
+    const deletedUser = await Users.findByIdAndDelete(id);
 
     if (!deletedUser) {
       return NextResponse.json({ error: 'User not found' }, { status: 404 });

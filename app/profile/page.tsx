@@ -11,7 +11,7 @@ import { Button } from "@/components/ui/button"
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import { Plus } from "lucide-react"
 import { toast } from "react-hot-toast"
-
+import { signOut } from "next-auth/react";
 export default function ProfilePage() {
   const { data: session, status }: any = useSession()
   const router = useRouter()
@@ -84,6 +84,7 @@ export default function ProfilePage() {
         method: "DELETE",
       })
       if (response.ok) {
+        signOut()
         toast({
           title: "Account deleted",
           description: "Your account has been successfully deleted.",

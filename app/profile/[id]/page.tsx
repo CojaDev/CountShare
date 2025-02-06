@@ -4,7 +4,6 @@ import { useState, useEffect } from "react";
 import { useParams } from "next/navigation";
 import Layout from "@/components/Layout";
 import { ProfileHeader } from "@/components/ProfileHeader";
-import { ProfileBio } from "@/components/ProfileBio";
 import { CountdownGrid } from "@/components/CountdownGrid";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 
