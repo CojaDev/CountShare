@@ -388,7 +388,7 @@ export default function CreateCountdown() {
                       onChange={handleChange}
                       className="mt-1"
                       rows={5}
-                      placeholder=".countdown { /* Your custom styles */ }"
+                      placeholder=".countdown, .countdown-content, .countdown-label, .countdown-timer, .countdown-timer-value, .countdown-timer-unit, .countdown-description"
                     />
                   </div>
                 </div>
@@ -418,9 +418,7 @@ export default function CreateCountdown() {
             >
               {isSubmitting ? "Creating..." : "Create Countdown"}
             </Button>
-            <Button variant="outline" className="w-full">
-              Save as Draft
-            </Button>
+
             <Button
               variant="outline"
               className="w-full"
@@ -439,7 +437,7 @@ export default function CreateCountdown() {
 
       {/* Fullscreen Preview Dialog */}
       <Dialog open={isFullscreenPreview} onOpenChange={setIsFullscreenPreview}>
-        <DialogTitle>Fullscreen</DialogTitle>
+        <DialogTitle></DialogTitle>
         <DialogContent className="max-w-full h-screen p-0">
           <CountdownPreview
             {...countdownData}

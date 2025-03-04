@@ -33,7 +33,7 @@ export default function PublicProfilePage() {
 
   const fetchUserCountdowns = async (countdownIds: { id: string }[]) => {
     try {
-      const countdownsData :any = await Promise.all(
+      const countdownsData: any = await Promise.all(
         countdownIds.map(async (count: { id: string }) => {
           const response = await fetch(`/api/countdowns/${count.id}`);
           if (!response.ok) {
@@ -42,7 +42,13 @@ export default function PublicProfilePage() {
           return response.json();
         })
       );
-      setCountdowns(countdownsData);
+      const now = new Date().getTime();
+      const filtered = countdownsData.filter(
+        (countdown: any) =>
+          countdown.isPublic && new Date(countdown.date).getTime() > now
+      );
+
+      setCountdowns(filtered);
     } catch (error) {
       console.error("Error fetching countdowns:", error);
     }

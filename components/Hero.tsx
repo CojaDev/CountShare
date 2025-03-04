@@ -158,7 +158,7 @@ export function Hero() {
                   Create Countdown
                 </Button>
               </Link>
-              <Link href="/explore" passHref>
+              <Link href="/countdowns" passHref>
                 <Button
                   variant="outline"
                   className="text-[#00c2cb] border-[#00c2cb] hover:bg-[#00c2cb] hover:text-white transition-colors duration-200 text-lg md:py-[1.40rem] py-5 px-6"
@@ -168,13 +168,13 @@ export function Hero() {
               </Link>
             </div>
             <div className="mt-12">
-              <p className="text-gray-500 mb-3">Popular categories</p>
+              <p className="text-gray-500 mb-3">Trending Searches</p>
               <div className="flex flex-wrap justify-center gap-4">
                 {["Birthdays", "Holidays", "Events", "Personal"].map(
                   (category) => (
                     <Link
                       key={category}
-                      href={`/category/${category.toLowerCase()}`}
+                      href={`/countdowns?search=${category.toLowerCase()}`}
                     >
                       <span className="text-[#00c2cb] hover:underline bg-gray-100 px-3 py-1.5 rounded-full text-sm">
                         {category}

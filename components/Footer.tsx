@@ -13,7 +13,7 @@ export function Footer() {
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-8 pb-8">
         <div className="grid grid-cols-1 md:grid-cols-4 gap-8">
           <div>
-            <div className="flex gap-1.5">
+            <Link href="/" className="flex gap-1.5">
               <h3 className="text-xl mb-4 font-bold text-[#00c2cb]">
                 Count<span className="text-white ml-[1px]">Share</span>
               </h3>
@@ -25,7 +25,7 @@ export function Footer() {
                 draggable="false"
                 className="max-w-[32px] max-h-[32px] w-full h-full object-cover"
               />
-            </div>
+            </Link>
             <p className="text-sm text-gray-400">
               Create, share, and celebrate moments together.
             </p>

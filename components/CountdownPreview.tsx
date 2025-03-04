@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
 import Link from "next/link";
-import { User, Maximize2 } from 'lucide-react';
+import { User, Maximize2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 
 interface CountdownPreviewProps {
@@ -43,7 +43,7 @@ export default function CountdownPreview({
   createdBy,
   onFullscreen,
   isFullPage = false,
-  isCard=false,
+  isCard = false,
 }: CountdownPreviewProps) {
   const [timeLeft, setTimeLeft] = useState({
     days: 0,
@@ -93,7 +93,7 @@ export default function CountdownPreview({
 
   return (
     <div
-      className={`relative flex flex-col items-center justify-center ${containerClasses} bg-white`}
+      className={`relative countdown flex flex-col items-center justify-center ${containerClasses} bg-white`}
       style={previewStyle}
     >
       <style>{customCSS}</style>
@@ -107,39 +107,66 @@ export default function CountdownPreview({
           <Maximize2 className="h-6 w-6" />
         </Button>
       )}
-      <div className="text-center p-8 max-w-3xl md:scale-100 scale-[0.65] md:mt-0 -mt-24">
-        <h2 className="text-4xl font-bold mb-8" style={{ fontSize: `${fontSize}px` }}>{name || "Countdown Name"}</h2>
-        <div className="flex justify-center space-x-4 mb-8">
+      <div className="text-center countdown-content p-8 max-w-3xl md:scale-100 scale-[0.65] md:mt-0 -mt-24">
+        <h2
+          className="text-4xl countdown-title font-bold mb-8"
+          style={{ fontSize: `${fontSize}px` }}
+        >
+          {name || "Countdown Name"}
+        </h2>
+        <div className="flex justify-center countdown-timer space-x-4 mb-8">
           {Object.entries(timeLeft).map(([unit, value]) =>
             showSeconds || unit !== "seconds" ? (
-              <div key={unit} className="flex flex-col items-center">
-                <span className="font-bold mb-2" style={{ fontSize: `${fontSize * 1.5}px` }}>{value}</span>
-                {showLabels && <span className="uppercase" style={{ fontSize: `${fontSize * 0.5}px` }}>{unit}</span>}
+              <div key={unit} className="flex flex-col  items-center">
+                <span
+                  className="font-bold mb-2 countdown-timer-value"
+                  style={{ fontSize: `${fontSize * 1.5}px` }}
+                >
+                  {value}
+                </span>
+                {showLabels && (
+                  <span
+                    className="uppercase countdown-timer-unit"
+                    style={{ fontSize: `${fontSize * 0.5}px` }}
+                  >
+                    {unit}
+                  </span>
+                )}
               </div>
             ) : null
           )}
         </div>
-        <p className="mb-4" style={{ fontSize: `${fontSize * 0.5}px` }}>{description || "Countdown description"}</p>
-        <p style={{ fontSize: `${fontSize * 0.4}px` }}>
+        <p
+          className="mb-4 countdown-description"
+          style={{ fontSize: `${fontSize * 0.5}px` }}
+        >
+          {description || "Countdown description"}
+        </p>
+        <p
+          className="countdown-event-date"
+          style={{ fontSize: `${fontSize * 0.4}px` }}
+        >
           Event date: {date ? new Date(date).toLocaleString() : "Not set"}
         </p>
       </div>
       {!isCard && (
-
-      <div className="absolute bottom-4 left-4 flex items-center space-x-2 md:scale-100 scale-95">
-        <Link href={`/profile/${createdBy.id}`}>
-          <Button variant="ghost" size="sm" className="text-white bg-black bg-opacity-50 h-[1.8rem] hover:bg-opacity-75">
-            <User className="h-4 w-4 mr-2" />
-            {createdBy.name}
-          </Button>
-        </Link>
-      </div>
-      
+        <div className="absolute bottom-4 left-4 flex items-center space-x-2 md:scale-100 scale-95">
+          <Link href={`/profile/${createdBy.id}`}>
+            <Button
+              variant="ghost"
+              size="sm"
+              className="text-white bg-black bg-opacity-50 h-[1.8rem] hover:bg-opacity-75"
+            >
+              <User className="h-4 w-4 mr-2" />
+              {createdBy.name}
+            </Button>
+          </Link>
+        </div>
       )}
-      {isPublic && !isCard && (
+      {!isPublic && !isCard && (
         <div className="absolute bottom-4 right-4">
-          <span className="text-sm bg-green-500 text-white px-2.5 py-1.5  rounded">
-            Public
+          <span className="text-sm bg-red-500 text-white px-2.5 py-1.5 select-none  rounded">
+            Private
           </span>
         </div>
       )}
@@ -151,4 +178,3 @@ export default function CountdownPreview({
     </div>
   );
 }
-

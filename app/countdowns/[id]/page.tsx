@@ -10,6 +10,7 @@ import { Button } from "@/components/ui/button";
 import { CountdownData } from "@/lib/countTypes";
 import { UserTypes } from "@/lib/userTypes";
 import NotFound from "@/components/NotFound";
+import { Footer } from "@/components/Footer";
 
 const CountdownPage = () => {
   const [isFullscreenPreview, setIsFullscreenPreview] = useState(false);
@@ -58,28 +59,34 @@ const CountdownPage = () => {
 
   if (isLoading) {
     return (
-      <Layout>
-        <div className="flex justify-center items-center min-h-screen">
-          <p>Loading...</p>
+      <main className="flex-grow">
+        <div className="flex flex-col min-h-screen">
+          <div className="flex justify-center items-center min-h-screen">
+            <p>Loading...</p>
+          </div>
         </div>
-      </Layout>
+        <Footer />
+      </main>
     );
   }
 
   return (
-    <Layout>
-      {exists && countdownData && userData ? (
-        <>
-          <CountdownPreview
-            {...countdownData}
-            createdBy={{ id: userData.id || "", name: userData.name || "" }}
-            isFullPage={true}
-          />
-        </>
-      ) : (
-        <NotFound message="Countdown Not Found" />
-      )}
-    </Layout>
+    <main className="flex-grow">
+      <div className="flex flex-col min-h-screen">
+        {exists && countdownData && userData ? (
+          <>
+            <CountdownPreview
+              {...countdownData}
+              createdBy={{ id: userData.id || "", name: userData.name || "" }}
+              isFullPage={true}
+            />
+          </>
+        ) : (
+          <NotFound message="Countdown Not Found" />
+        )}
+      </div>
+      <Footer />
+    </main>
   );
 };
 
