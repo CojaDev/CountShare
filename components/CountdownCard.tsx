@@ -1,24 +1,29 @@
-import { useState } from "react"
-import Link from "next/link"
-import { Edit2, Trash2, User, Calendar, Clock, Share2 } from "lucide-react"
-import { Button } from "@/components/ui/button"
-import CountdownPreview from "@/components/CountdownPreview"
-import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip"
-import { Description } from "@radix-ui/react-dialog"
+import { useState } from "react";
+import Link from "next/link";
+import { Edit2, Trash2, User, Calendar, Clock, Share2 } from "lucide-react";
+import { Button } from "@/components/ui/button";
+import CountdownPreview from "@/components/CountdownPreview";
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipProvider,
+  TooltipTrigger,
+} from "@/components/ui/tooltip";
+import { Description } from "@radix-ui/react-dialog";
 
 interface CountdownCardProps {
-  _id: string
-  name: string
-  description: string
-  createdBy: string
-  date: string
-  backgroundColor: string
-  textColor: string
-  creatorName: string
-  backgroundImage?: string
-  onEdit?: () => void
-  onDelete?: () => void
-  showActions?: boolean
+  _id: string;
+  name: string;
+  description: string;
+  createdBy: string;
+  date: string;
+  backgroundColor: string;
+  textColor: string;
+  creatorName: string;
+  backgroundImage?: string;
+  onEdit?: () => void;
+  onDelete?: () => void;
+  showActions?: boolean;
 }
 
 export function CountdownCard({
@@ -35,21 +40,21 @@ export function CountdownCard({
   onDelete,
   showActions = false,
 }: CountdownCardProps) {
-  const [isHovered, setIsHovered] = useState(false)
+  const [isHovered, setIsHovered] = useState(false);
 
   const formatTimeLeft = (targetDate: string) => {
-    const now = new Date()
-    const target = new Date(targetDate)
-    const diff = target.getTime() - now.getTime()
+    const now = new Date();
+    const target = new Date(targetDate);
+    const diff = target.getTime() - now.getTime();
 
-    if (diff <= 0) return "Ended"
+    if (diff <= 0) return "Ended";
 
-    const days = Math.floor(diff / (1000 * 60 * 60 * 24))
-    const hours = Math.floor((diff % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60))
-    const minutes = Math.floor((diff % (1000 * 60 * 60)) / (1000 * 60))
+    const days = Math.floor(diff / (1000 * 60 * 60 * 24));
+    const hours = Math.floor((diff % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+    const minutes = Math.floor((diff % (1000 * 60 * 60)) / (1000 * 60));
 
-    return `${days}d ${hours}h ${minutes}m`
-  }
+    return `${days}d ${hours}h ${minutes}m`;
+  };
 
   return (
     <div
@@ -57,8 +62,7 @@ export function CountdownCard({
       onMouseEnter={() => setIsHovered(true)}
       onMouseLeave={() => setIsHovered(false)}
     >
-      <Link
-            href={`/countdowns/${_id}`} className="relative">
+      <Link href={`/countdowns/${_id}`} className="relative">
         <div className="h-52 relative overflow-hidden group">
           <CountdownPreview
             name={name}
@@ -80,10 +84,7 @@ export function CountdownCard({
           <div className="absolute inset-0 bg-gradient-to-t rounded-lg from-black/50 to-transparent  transition-opacity duration-300" />
         </div>
         <div className="absolute bottom-2 select-none left-2 right-2 flex justify-between items-end">
-          <p
-            
-            className="text-xl font-bold text-white hover:text-[#00c2cb] transition-colors z-10"
-          >
+          <p className="text-xl font-bold text-white hover:text-[#00c2cb] transition-colors z-10">
             {name}
           </p>
           <TooltipProvider>
@@ -105,7 +106,9 @@ export function CountdownCard({
         <div className="flex justify-between items-center mb-3">
           <div className="flex items-center text-gray-600">
             <Calendar className="w-4 h-4 mr-1" />
-            <span className="text-sm">{new Date(date).toLocaleDateString()}</span>
+            <span className="text-sm">
+              {new Date(date).toLocaleDateString()}
+            </span>
           </div>
           <div className="flex items-center text-[#00c2cb] font-semibold">
             <Clock className="w-4 h-4 mr-1" />
@@ -127,14 +130,20 @@ export function CountdownCard({
               )}
             </div>
           ) : (
-            <div className="flex-grow" >
-               <p className="capitalize">{description?description:"Countdown Description"}</p>
+            <div className="flex-grow max-h-20 overflow-hidden">
+              <p className="capitalize text-clip line-clamp-3">
+                {description ? description : "Countdown Description"}
+              </p>
             </div> // Spacer when actions are not shown
           )}
           <TooltipProvider>
             <Tooltip>
               <TooltipTrigger asChild>
-                <Button size="sm" variant="ghost" className="text-gray-500 hover:text-[#00c2cb]">
+                <Button
+                  size="sm"
+                  variant="ghost"
+                  className="text-gray-500 hover:text-[#00c2cb]"
+                >
                   <Share2 className="w-4 h-4" />
                 </Button>
               </TooltipTrigger>
@@ -146,6 +155,5 @@ export function CountdownCard({
         </div>
       </div>
     </div>
-  )
+  );
 }
-
