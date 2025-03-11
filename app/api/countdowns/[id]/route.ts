@@ -26,10 +26,7 @@ export async function GET(request: any, { params }: any) {
   }
 }
 
-export async function PUT(
-  req: Request,
-  { params }: { params: { id: string } }
-) {
+export async function PUT(req: Request, { params }: any) {
   try {
     await connectToDatabase();
     const formData = await req.formData();

@@ -2,10 +2,7 @@ import { NextResponse } from "next/server";
 import { connectToDatabase } from "@/lib/db";
 import Users from "@/models/Users";
 
-export async function DELETE(
-  req: Request,
-  { params }: { params: { id: string } }
-) {
+export async function DELETE(req: Request, { params }: any) {
   try {
     await connectToDatabase();
     const { countdownId } = await req.json();
