@@ -1,7 +1,7 @@
-import { NextResponse } from 'next/server';
-import { connectToDatabase } from '@/lib/db';
-import Countdowns from '@/models/Countdowns';
-import Users from '@/models/Users';
+import { NextResponse } from "next/server";
+import { connectToDatabase } from "@/lib/db";
+import Countdowns from "@/models/Countdowns";
+import Users from "@/models/Users";
 
 export async function GET() {
   try {
@@ -16,6 +16,7 @@ export async function GET() {
     );
   }
 }
+
 export async function POST(req: Request) {
   try {
     const formData = await req.formData();
@@ -32,14 +33,14 @@ export async function POST(req: Request) {
       backgroundImage: countdownData.backgroundImage,
       description: countdownData.description,
       fontSize: parseInt(countdownData.fontSize as string),
-      showSeconds: countdownData.showSeconds === 'true',
-      showLabels: countdownData.showLabels === 'true',
-      enableNotifications: countdownData.enableNotifications === 'true',
+      showSeconds: countdownData.showSeconds === "true",
+      showLabels: countdownData.showLabels === "true",
+      enableNotifications: countdownData.enableNotifications === "true",
       notificationEmail: countdownData.notificationEmail,
       theme: countdownData.theme,
       customCSS: countdownData.customCSS,
-      isPublic: countdownData.isPublic === 'true',
-      showWatermark: countdownData.showWatermark === 'true',
+      isPublic: countdownData.isPublic === "true",
+      showWatermark: countdownData.showWatermark === "true",
       createdBy: countdownData.createdBy,
     });
 
@@ -54,8 +55,10 @@ export async function POST(req: Request) {
 
     return NextResponse.json({ id: newCountdown._id }, { status: 201 });
   } catch (error) {
-    console.error('Error creating countdown:', error);
-    return NextResponse.json({ error: 'Internal Server Error' }, { status: 500 });
+    console.error("Error creating countdown:", error);
+    return NextResponse.json(
+      { error: "Internal Server Error" },
+      { status: 500 }
+    );
   }
 }
-

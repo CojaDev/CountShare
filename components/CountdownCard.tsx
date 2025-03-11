@@ -81,7 +81,7 @@ export function CountdownCard({
             createdBy={{ id: "", name: "" }}
             isCard={true}
           />
-          <div className="absolute inset-0 bg-gradient-to-t rounded-lg from-black/50 to-transparent  transition-opacity duration-300" />
+          <div className="absolute inset-0 bg-gradient-to-t rounded-lg from-black/70 to-transparent  transition-opacity duration-300" />
         </div>
         <div className="absolute bottom-2 select-none left-2 right-2 flex justify-between items-end">
           <p className="text-xl font-bold text-white hover:text-[#00c2cb] transition-colors z-10">
@@ -131,7 +131,7 @@ export function CountdownCard({
             </div>
           ) : (
             <div className="flex-grow max-h-20 overflow-hidden">
-              <p className="capitalize text-clip line-clamp-3">
+              <p className="capitalize text-clip line-clamp-2">
                 {description ? description : "Countdown Description"}
               </p>
             </div> // Spacer when actions are not shown

@@ -13,6 +13,7 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { CountdownCard } from "@/components/CountdownCard";
+import Loader from "@/components/Loader";
 import { Pagination } from "@/components/ui/pagination";
 import { Search, SlidersHorizontal } from "lucide-react";
 
@@ -40,6 +41,7 @@ const CountdownsPage = () => {
   );
   const [sortBy, setSortBy] = useState("date");
   const [sortOrder, setSortOrder] = useState("asc");
+  const [loading, setIsLoading] = useState(true);
   const itemsPerPage = 12;
 
   useEffect(() => {
@@ -84,8 +86,10 @@ const CountdownsPage = () => {
       countdownsWithCreatorNames.sort(() => Math.random() - 0.5);
 
       setCountdowns(countdownsWithCreatorNames);
+      setIsLoading(false);
     } catch (error) {
       console.error("Error fetching countdowns:", error);
+      setIsLoading(false);
     }
   };
 
@@ -130,6 +134,10 @@ const CountdownsPage = () => {
     (currentPage - 1) * itemsPerPage,
     currentPage * itemsPerPage
   );
+
+  if (loading) {
+    return <Loader />;
+  }
 
   return (
     <div className="container mx-auto px-4 py-10">

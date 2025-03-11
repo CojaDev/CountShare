@@ -2,6 +2,7 @@ import { useState, useEffect } from "react";
 import Link from "next/link";
 import { User, Maximize2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import Image from "next/image";
 
 interface CountdownPreviewProps {
   name: string;
@@ -150,17 +151,34 @@ export default function CountdownPreview({
         </p>
       </div>
       {!isCard && (
-        <div className="absolute bottom-4 left-4 flex items-center space-x-2 md:scale-100 scale-95">
+        <div className="absolute bottom-4 left-4 flex flex-col items-start gap-y-1.5 md:scale-100 scale-95">
           <Link href={`/profile/${createdBy.id}`}>
             <Button
               variant="ghost"
               size="sm"
               className="text-white bg-black bg-opacity-50 h-[1.8rem] hover:bg-opacity-75"
             >
-              <User className="h-4 w-4 mr-2" />
+              <User className="h-4 w-4 -mx-1" />
               {createdBy.name}
             </Button>
           </Link>
+          {showWatermark && (
+            <Link
+              href={`/`}
+              target="blank"
+              className="text-sm flex gap-1 text-white bg-black bg-opacity-50 px-2 py-1 rounded"
+            >
+              Made with CountShare
+              <Image
+                width={60}
+                height={60}
+                className="size-[20px] object-cover"
+                draggable={false}
+                alt="logo"
+                src={"/logo.png"}
+              />
+            </Link>
+          )}
         </div>
       )}
       {!isPublic && !isCard && (
@@ -168,11 +186,6 @@ export default function CountdownPreview({
           <span className="text-sm bg-red-500 text-white px-2.5 py-1.5 select-none  rounded">
             Private
           </span>
-        </div>
-      )}
-      {showWatermark && (
-        <div className="absolute bottom-4 left-1/2 transform -translate-x-1/2 text-sm text-white bg-black bg-opacity-50 px-2 py-1 rounded">
-          Made with CountShare
         </div>
       )}
     </div>

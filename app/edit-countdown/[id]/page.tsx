@@ -2,9 +2,9 @@
 
 import type React from "react";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useSession } from "next-auth/react";
-import { useRouter } from "next/navigation";
+import { useRouter, useParams } from "next/navigation";
 import Layout from "@/components/Layout";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -26,8 +26,9 @@ import type { UserTypes } from "@/lib/userTypes";
 import { Dialog, DialogContent, DialogTitle } from "@/components/ui/dialog";
 import { toast } from "react-hot-toast";
 import type { CountdownData } from "@/lib/countTypes";
+import Loader from "@/components/Loader";
 
-export default function CreateCountdown() {
+export default function EditCountdown() {
   const [countdownData, setCountdownData] = useState<CountdownData>({
     name: "",
     date: "",
@@ -48,15 +49,41 @@ export default function CreateCountdown() {
   });
   const [isFullscreenPreview, setIsFullscreenPreview] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [isLoading, setIsLoading] = useState(true);
   const { data: session } = useSession();
   const router = useRouter();
+  const params = useParams();
+  const countdownId = params.id as string;
 
   const user = session?.user as UserTypes;
+
+  useEffect(() => {
+    const fetchCountdownData = async () => {
+      try {
+        const response = await fetch(`/api/countdowns/${countdownId}`);
+        if (response.ok) {
+          const data = await response.json();
+          setCountdownData(data);
+        } else {
+          throw new Error("Failed to fetch countdown data");
+        }
+      } catch (error) {
+        console.error("Error fetching countdown data:", error);
+        toast.error("Failed to load countdown data. Please try again.");
+      } finally {
+        setIsLoading(false);
+      }
+    };
+
+    if (countdownId) {
+      fetchCountdownData();
+    }
+  }, [countdownId]);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!user?.id) {
-      toast.error("You must be logged in to create a countdown");
+      toast.error("You must be logged in to edit a countdown");
       return;
     }
 
@@ -72,21 +99,20 @@ export default function CreateCountdown() {
 
       formData.append("createdBy", user.id);
 
-      const response = await fetch("/api/countdowns", {
-        method: "POST",
+      const response = await fetch(`/api/countdowns/${countdownId}`, {
+        method: "PUT",
         body: formData,
       });
 
       if (response.ok) {
-        const data = await response.json();
-        toast.success("Countdown created successfully!");
-        router.push(`/countdowns/${data.id}`);
+        toast.success("Countdown updated successfully!");
+        router.push(`/countdowns/${countdownId}`);
       } else {
-        throw new Error("Failed to save countdown");
+        throw new Error("Failed to update countdown");
       }
     } catch (error) {
-      console.error("Error saving countdown:", error);
-      toast.error("Failed to create countdown. Please try again.");
+      console.error("Error updating countdown:", error);
+      toast.error("Failed to update countdown. Please try again.");
     } finally {
       setIsSubmitting(false);
     }
@@ -162,7 +188,7 @@ export default function CreateCountdown() {
         <div className="flex items-center justify-center h-[calc(100vh-4rem)]">
           <div className="text-center">
             <h1 className="text-2xl font-bold mb-4">
-              Please log in to create a countdown
+              Please log in to edit a countdown
             </h1>
             <Button onClick={() => router.push("/login")}>Log In</Button>
           </div>
@@ -171,9 +197,17 @@ export default function CreateCountdown() {
     );
   }
 
+  if (isLoading) {
+    return (
+      <Layout>
+        <Loader />
+      </Layout>
+    );
+  }
+
   return (
     <Layout>
-      <div className="flex flex-col lg:flex-row h-full lg:max-h-[calc(100vh-4rem)] bg-gray-100 overflow-hidden">
+      <div className="flex flex-col lg:flex-row h-full lg:max-h-[calc(100vh-4rem)] bg-gray-100">
         {/* Left Sidebar */}
         <div className="w-full min-h-[calc(100vh-4rem)] lg:w-80 bg-white p-4 overflow-y-auto border-b lg:border-r border-gray-200">
           <Tabs defaultValue="basic" className="w-full">
@@ -394,20 +428,12 @@ export default function CreateCountdown() {
         </div>
 
         {/* Center - Countdown Preview */}
-        <div className="flex-1 lg:flex hidden items-center justify-center p-4 lg:p-6 bg-gray-50">
+        <div className="flex-1 flex items-center justify-center p-4 lg:p-6 bg-gray-50">
           <CountdownPreview
             {...countdownData}
             createdBy={{ id: user?.id || "", name: user?.name || "" }}
             onFullscreen={() => setIsFullscreenPreview(true)}
             isFullPage={false}
-          />
-        </div>
-        <div className="flex-1 lg:hidden flex items-center justify-center p-4 lg:p-6 bg-gray-50">
-          <CountdownPreview
-            {...countdownData}
-            createdBy={{ id: user?.id || "", name: user?.name || "" }}
-            onFullscreen={() => setIsFullscreenPreview(true)}
-            isFullPage={true}
           />
         </div>
 
@@ -420,7 +446,7 @@ export default function CreateCountdown() {
               className="w-full bg-[#00c2cb] hover:bg-[#00a7af]"
               disabled={isSubmitting}
             >
-              {isSubmitting ? "Creating..." : "Create Countdown"}
+              {isSubmitting ? "Updating..." : "Update Countdown"}
             </Button>
 
             <Button

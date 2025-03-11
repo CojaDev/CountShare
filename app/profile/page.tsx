@@ -1,63 +1,64 @@
-"use client"
+"use client";
 
-import { useState, useEffect } from "react"
-import { useSession } from "next-auth/react"
-import { useRouter } from "next/navigation"
-import Layout from "@/components/Layout"
-import { ProfileHeader } from "@/components/ProfileHeader"
-import { ProfileSettings } from "@/components/ProfileSettings"
-import { CountdownGrid } from "@/components/CountdownGrid"
-import { Button } from "@/components/ui/button"
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
-import { Plus } from "lucide-react"
-import { toast } from "react-hot-toast"
+import { useState, useEffect } from "react";
+import { useSession } from "next-auth/react";
+import { useRouter } from "next/navigation";
+import Layout from "@/components/Layout";
+import { ProfileHeader } from "@/components/ProfileHeader";
+import { ProfileSettings } from "@/components/ProfileSettings";
+import { CountdownGrid } from "@/components/CountdownGrid";
+import { Button } from "@/components/ui/button";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { Plus } from "lucide-react";
+import { toast } from "react-hot-toast";
 import { signOut } from "next-auth/react";
+import Loader from "@/components/Loader";
 export default function ProfilePage() {
-  const { data: session, status }: any = useSession()
-  const router = useRouter()
-  const [user, setUser] = useState<any>(null)
-  const [countdowns, setCountdowns] = useState([])
-  const [showSettings, setShowSettings] = useState(false)
-  const [activeTab, setActiveTab] = useState("countdowns")
+  const { data: session, status }: any = useSession();
+  const router = useRouter();
+  const [user, setUser] = useState<any>(null);
+  const [countdowns, setCountdowns] = useState([]);
+  const [showSettings, setShowSettings] = useState(false);
+  const [activeTab, setActiveTab] = useState("countdowns");
 
   useEffect(() => {
     if (status === "unauthenticated") {
-      router.push("/login")
+      router.push("/login");
     } else if (status === "authenticated" && session?.user) {
-      fetchUserData()
+      fetchUserData();
     }
-  }, [status, session])
+  }, [status, session]);
 
   const fetchUserData = async () => {
     try {
-      const response = await fetch(`/api/users/${session?.user.id}`)
-      const userData = await response.json()
-      setUser(userData)
+      const response = await fetch(`/api/users/${session?.user.id}`);
+      const userData = await response.json();
+      setUser(userData);
 
       if (userData.countdowns && userData.countdowns.length > 0) {
-        fetchUserCountdowns(userData.countdowns)
+        fetchUserCountdowns(userData.countdowns);
       }
     } catch (error) {
-      console.error("Error fetching user data:", error)
+      console.error("Error fetching user data:", error);
     }
-  }
+  };
 
   const fetchUserCountdowns = async (countdownIds: { id: string }[]) => {
     try {
       const countdownsData: any = await Promise.all(
         countdownIds.map(async (count: { id: string }) => {
-          const response = await fetch(`/api/countdowns/${count.id}`)
+          const response = await fetch(`/api/countdowns/${count.id}`);
           if (!response.ok) {
-            throw new Error(`HTTP error! status: ${response.status}`)
+            throw new Error(`HTTP error! status: ${response.status}`);
           }
-          return response.json()
-        }),
-      )
-      setCountdowns(countdownsData)
+          return response.json();
+        })
+      );
+      setCountdowns(countdownsData);
     } catch (error) {
-      console.error("Error fetching countdowns:", error)
+      console.error("Error fetching countdowns:", error);
     }
-  }
+  };
 
   const handleSettingsSave = async (updatedUserData: any) => {
     try {
@@ -82,57 +83,80 @@ export default function ProfilePage() {
     try {
       const response = await fetch(`/api/users/${session?.user.id}`, {
         method: "DELETE",
-      })
+      });
       if (response.ok) {
-        signOut()
+        signOut();
         toast({
           title: "Account deleted",
           description: "Your account has been successfully deleted.",
-        })
-        router.push("/")
+        });
+        router.push("/");
       } else {
-        throw new Error(`HTTP error! status: ${response.status}`)
+        throw new Error(`HTTP error! status: ${response.status}`);
       }
     } catch (error) {
-      console.error("Error deleting account:", error)
+      console.error("Error deleting account:", error);
       toast({
         title: "Error",
         description: "Failed to delete account. Please try again.",
         variant: "destructive",
-      })
+      });
     }
-  }
+  };
 
   const handleCountdownEdit = (id: string) => {
-    router.push(`/edit-countdown/${id}`)
-  }
+    router.push(`/edit-countdown/${id}`);
+  };
 
   const handleCountdownDelete = async (id: string) => {
     try {
-      const response = await fetch(`/api/countdowns/${id}`, {
+      // Delete countdown
+      const countdownResponse = await fetch(`/api/countdowns/${id}`, {
         method: "DELETE",
-      })
-      if (response.ok) {
-        setCountdowns(countdowns.filter((countdown: any) => countdown.id !== id))
-        toast({
-          title: "Countdown deleted",
-          description: "Your countdown has been successfully deleted.",
-        })
-      } else {
-        throw new Error(`HTTP error! status: ${response.status}`)
+      });
+
+      if (!countdownResponse.ok) {
+        throw new Error(`HTTP error! status: ${countdownResponse.status}`);
       }
+
+      // Update user's countdowns
+      const userResponse = await fetch(
+        `/api/users/${session?.user.id}/countdowns`,
+        {
+          method: "DELETE",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ countdownId: id }),
+        }
+      );
+
+      if (!userResponse.ok) {
+        throw new Error(`HTTP error! status: ${userResponse.status}`);
+      }
+
+      // Update local state
+      setCountdowns(
+        countdowns.filter((countdown: any) => countdown._id !== id)
+      );
+      setUser((prevUser: any) => ({
+        ...prevUser,
+        countdowns: prevUser.countdowns.filter(
+          (c: { id: string }) => c.id !== id
+        ),
+      }));
+
+      toast.success("Countdown deleted successfully");
     } catch (error) {
-      console.error("Error deleting countdown:", error)
-      toast({
-        title: "Error",
-        description: "Failed to delete countdown. Please try again.",
-        variant: "destructive",
-      })
+      console.error("Error deleting countdown:", error);
+      toast.error("Failed to delete countdown. Please try again.");
     }
-  }
+  };
 
   if (status === "loading" || !user) {
-    return <div>Loading...</div>
+    return (
+      <Layout>
+        <Loader />
+      </Layout>
+    );
   }
 
   return (
@@ -151,7 +175,11 @@ export default function ProfilePage() {
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
         <div className="grid grid-cols-1 gap-8">
           <div className="w-full">
-            <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
+            <Tabs
+              value={activeTab}
+              onValueChange={setActiveTab}
+              className="w-full"
+            >
               <div className="flex justify-between items-center mb-4">
                 <TabsList>
                   <TabsTrigger value="countdowns">Countdowns</TabsTrigger>
@@ -184,6 +212,5 @@ export default function ProfilePage() {
         onClose={() => setShowSettings(false)}
       />
     </Layout>
-  )
+  );
 }
-
