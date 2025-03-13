@@ -68,7 +68,7 @@ export function CountdownGridHero() {
   }, []);
 
   // Calculate total pages for each screen size
-  const totalPagesMobile = Math.ceil(countdowns.length / 2);
+  const totalPagesMobile = Math.ceil(countdowns.length / 8);
   const totalPagesTablet = Math.ceil(countdowns.length / 4);
   const totalPagesDesktop = Math.ceil(countdowns.length / 8);
 
@@ -114,7 +114,7 @@ export function CountdownGridHero() {
         </h2>
         <div className="relative">
           {/* Mobile Carousel (1 item per slide) - Only visible on small screens */}
-          <div className="sm:hidden overflow-hidden">
+          <div className="md:hidden overflow-hidden">
             <div
               className="flex transition-transform duration-300 ease-in-out"
               style={{
@@ -136,7 +136,7 @@ export function CountdownGridHero() {
           </div>
 
           {/* Tablet Carousel (2 items per slide) - Only visible on medium screens */}
-          <div className="hidden sm:block lg:hidden overflow-hidden">
+          <div className="hidden md:block xl:hidden overflow-hidden">
             <div
               className="flex transition-transform duration-300 ease-in-out"
               style={{
@@ -169,7 +169,7 @@ export function CountdownGridHero() {
           </div>
 
           {/* Desktop Carousel (4 items per slide) - Only visible on large screens */}
-          <div className="hidden lg:block overflow-hidden">
+          <div className="hidden xl:block overflow-hidden">
             <div
               className="flex transition-transform duration-300 ease-in-out"
               style={{
