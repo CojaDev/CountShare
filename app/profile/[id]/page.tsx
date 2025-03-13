@@ -6,6 +6,7 @@ import Layout from "@/components/Layout";
 import { ProfileHeader } from "@/components/ProfileHeader";
 import { CountdownGrid } from "@/components/CountdownGrid";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import Loader from "@/components/Loader";
 
 export default function PublicProfilePage() {
   const { id } = useParams();
@@ -55,7 +56,7 @@ export default function PublicProfilePage() {
   };
 
   if (!user) {
-    return <div>Loading...</div>;
+    return <Loader />;
   }
 
   return (

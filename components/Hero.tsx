@@ -206,7 +206,7 @@ export function Hero() {
               </div>
             </div>
           </div>
-          <div className="w-full lg:w-1/4 md:block hidden space-y-4 mt-8 md:mt-0">
+          <div className="w-full lg:w-1/4 lg:block hidden space-y-4 mt-8 md:mt-0">
             {sampleCountdowns.slice(4, 8).map((countdown) => (
               <div
                 key={countdown.id}

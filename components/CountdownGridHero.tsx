@@ -69,7 +69,7 @@ export function CountdownGridHero() {
 
   // Calculate total pages for each screen size
   const totalPagesMobile = Math.ceil(countdowns.length / 8);
-  const totalPagesTablet = Math.ceil(countdowns.length / 4);
+  const totalPagesTablet = Math.ceil(countdowns.length / 2);
   const totalPagesDesktop = Math.ceil(countdowns.length / 8);
 
   const nextSlide = () => {
@@ -141,7 +141,7 @@ export function CountdownGridHero() {
               className="flex transition-transform duration-300 ease-in-out"
               style={{
                 transform: `translateX(-${currentIndexTablet * 100}%)`,
-                width: `${totalPagesTablet * 100}%`,
+                width: `${totalPagesTablet - 2 * 100}%`,
               }}
             >
               {Array.from({ length: totalPagesTablet }).map((_, pageIndex) => (
@@ -180,7 +180,7 @@ export function CountdownGridHero() {
               {Array.from({ length: totalPagesDesktop }).map((_, pageIndex) => (
                 <div
                   key={`desktop-${pageIndex}`}
-                  className="w-full flex-shrink-0"
+                  className="w-full flex-grow-0"
                 >
                   <div className="grid grid-cols-4 gap-4">
                     {countdowns
@@ -205,7 +205,7 @@ export function CountdownGridHero() {
           <Button
             variant="outline"
             size="icon"
-            className="absolute top-1/2 -left-2 sm:left-4 transform -translate-y-1/2 bg-white/80 hover:bg-white z-10"
+            className="absolute top-1/2 -left-2 sm:left-4  xl:hidden lg:flex transform -translate-y-1/2 bg-white/90 shadow hover:bg-white z-10"
             onClick={prevSlide}
           >
             <ChevronLeft className="h-6 w-6" />
@@ -213,7 +213,7 @@ export function CountdownGridHero() {
           <Button
             variant="outline"
             size="icon"
-            className="absolute top-1/2 -right-2 sm:right-4 transform -translate-y-1/2 bg-white/80 hover:bg-white z-10"
+            className="absolute top-1/2 -right-2 sm:right-4 xl:hidden lg:flex transform -translate-y-1/2 bg-white/90 hover:bg-white shadow z-10"
             onClick={nextSlide}
           >
             <ChevronRight className="h-6 w-6" />
@@ -247,8 +247,8 @@ export function CountdownGridHero() {
           ))}
         </div>
 
-        <div className="hidden lg:flex justify-center mt-6">
-          {Array.from({ length: totalPagesDesktop }).map((_, index) => (
+        <div className="xl:hidden lg:flex hidden justify-center mt-6">
+          {Array.from({ length: totalPagesDesktop + 1 }).map((_, index) => (
             <button
               key={`desktop-dot-${index}`}
               className={`h-2 w-8 rounded-full mx-1 ${

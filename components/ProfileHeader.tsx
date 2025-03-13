@@ -1,6 +1,7 @@
 import { User, MapPin, Calendar, Edit2, Share2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+import { ShareButton } from "./ShareButton";
 
 interface ProfileHeaderProps {
   user: {
@@ -10,6 +11,7 @@ interface ProfileHeaderProps {
     bio: string;
     premium: boolean;
     joinDate: string;
+    id: string;
   };
   isOwnProfile: boolean;
   onEditProfile: () => void;
@@ -37,21 +39,21 @@ export function ProfileHeader({
                   Premium
                 </span>
               )}
-                <div className="mt-6 flex gap-4">
-          <div className="flex items-center text-sm text-gray-300">
-            <Calendar className="mr-1.5 h-5 w-5 flex-shrink-0" />
-            Joined {user.joinDate}
-          </div>
-          <div className="flex items-center text-sm text-gray-300">
-            <User className="mr-1.5 h-5 w-5 flex-shrink-0" />
-            {user.premium ? "Premium Member" : "Free Member"}
-          </div>
-        </div>
-        <div className="mt-6 flex gap-4">
-          <div className="flex items-center text-sm text-gray-300">
-            {user.bio ? user.bio : <p>No bio yet</p>}
-          </div>
-        </div>
+              <div className="mt-6 flex gap-4">
+                <div className="flex items-center text-sm text-gray-300">
+                  <Calendar className="mr-1.5 h-5 w-5 flex-shrink-0" />
+                  Joined {user.joinDate}
+                </div>
+                <div className="flex items-center text-sm text-gray-300">
+                  <User className="mr-1.5 h-5 w-5 flex-shrink-0" />
+                  {user.premium ? "Premium Member" : "Free Member"}
+                </div>
+              </div>
+              <div className="mt-6 flex gap-4">
+                <div className="flex items-center text-sm text-gray-300">
+                  {user.bio ? user.bio : <p>No bio yet</p>}
+                </div>
+              </div>
             </div>
           </div>
           <div className="mt-6 flex flex-col-reverse justify-stretch space-y-4 space-y-reverse sm:flex-row-reverse sm:justify-end sm:space-x-3 sm:space-y-0 sm:space-x-reverse md:mt-0 md:flex-row md:space-x-3">
@@ -65,15 +67,17 @@ export function ProfileHeader({
                 Edit Profile
               </Button>
             ) : (
-              <Button variant="secondary" className="flex items-center">
-                <Share2 className="mr-2 h-4 w-4" />
-                Share Profile
-              </Button>
+              <ShareButton
+                countdownId={user.id}
+                countdownName={user.name}
+                variant="ghost"
+                types="profile"
+                size="icon"
+                className="text-gray-500 hover:text-[#00c2cb]"
+              />
             )}
           </div>
         </div>
-      
-       
       </div>
     </div>
   );

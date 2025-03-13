@@ -9,7 +9,7 @@ import {
   TooltipProvider,
   TooltipTrigger,
 } from "@/components/ui/tooltip";
-import { Description } from "@radix-ui/react-dialog";
+import { ShareButton } from "./ShareButton";
 
 interface CountdownCardProps {
   _id: string;
@@ -24,6 +24,12 @@ interface CountdownCardProps {
   onEdit?: () => void;
   onDelete?: () => void;
   showActions?: boolean;
+}
+interface ShareButtonProps {
+  countdownId: string;
+  countdownName: string;
+  variant?: "default" | "outline" | "ghost";
+  size?: "default" | "sm" | "lg" | "icon";
 }
 
 export function CountdownCard({
@@ -41,7 +47,7 @@ export function CountdownCard({
   showActions = false,
 }: CountdownCardProps) {
   const [isHovered, setIsHovered] = useState(false);
-
+  const [isShareModalOpen, setIsShareModalOpen] = useState(false);
   const formatTimeLeft = (targetDate: string) => {
     const now = new Date();
     const target = new Date(targetDate);
@@ -58,7 +64,7 @@ export function CountdownCard({
 
   return (
     <div
-      className="w-full bg-white rounded-xl overflow-hidden shadow-md transition-all duration-300 hover:shadow-xl border border-gray-200"
+      className="w-full bg-white rounded-xl overflow-hidden  shadow-md transition-all duration-300 hover:shadow-xl border border-gray-200"
       onMouseEnter={() => setIsHovered(true)}
       onMouseLeave={() => setIsHovered(false)}
     >
@@ -136,22 +142,14 @@ export function CountdownCard({
               </p>
             </div> // Spacer when actions are not shown
           )}
-          <TooltipProvider>
-            <Tooltip>
-              <TooltipTrigger asChild>
-                <Button
-                  size="sm"
-                  variant="ghost"
-                  className="text-gray-500 hover:text-[#00c2cb]"
-                >
-                  <Share2 className="w-4 h-4" />
-                </Button>
-              </TooltipTrigger>
-              <TooltipContent>
-                <p>Share this countdown</p>
-              </TooltipContent>
-            </Tooltip>
-          </TooltipProvider>
+          <ShareButton
+            countdownId={_id}
+            countdownName={name}
+            variant="ghost"
+            types="countdowns"
+            size="icon"
+            className="text-gray-500 hover:text-[#00c2cb] min-w-10"
+          />
         </div>
       </div>
     </div>
