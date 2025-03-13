@@ -18,27 +18,48 @@ interface TimeLeft {
   seconds: number;
 }
 
+const currentYear = new Date().getFullYear();
 const sampleCountdowns: Countdown[] = [
-  { id: "1", title: "New Year", endDate: new Date("2026-01-01T00:00:00") },
-  { id: "2", title: "Summer Break", endDate: new Date("2025-06-15T15:30:25") },
+  {
+    id: "1",
+    title: "New Year",
+    endDate: new Date(`${currentYear + 1}-01-01T00:00:00`),
+  },
+  {
+    id: "2",
+    title: "Summer Break",
+    endDate: new Date(`${currentYear + 1}-06-15T15:30:25`),
+  },
   {
     id: "3",
     title: "Product Launch",
-    endDate: new Date("2025-03-01T09:00:12"),
+    endDate: new Date(`${currentYear + 1}-03-01T09:00:12`),
   },
-  { id: "4", title: "Conference", endDate: new Date("2025-11-15T13:45:06") },
+  {
+    id: "4",
+    title: "Conference",
+    endDate: new Date(`${currentYear + 1}-02-12T13:45:06`),
+  },
   {
     id: "5",
     title: "Holiday Season",
-    endDate: new Date("2025-12-01T18:00:39"),
+    endDate: new Date(`${currentYear + 1}-12-01T18:00:39`),
   },
-  { id: "6", title: "Marathon", endDate: new Date("2025-04-20T07:30:56") },
+  {
+    id: "6",
+    title: "Marathon",
+    endDate: new Date(`${currentYear + 1}-04-20T07:30:56`),
+  },
   {
     id: "7",
     title: "Graduation Day",
-    endDate: new Date("2025-05-30T11:00:32"),
+    endDate: new Date(`${currentYear + 1}-05-30T11:00:32`),
   },
-  { id: "8", title: "Tech Summit", endDate: new Date("2025-09-10T10:15:44") },
+  {
+    id: "8",
+    title: "Tech Summit",
+    endDate: new Date(`${currentYear + 1}-09-10T10:15:44`),
+  },
 ];
 
 function CountdownTimer({ endDate }: { endDate: Date }) {
@@ -103,7 +124,7 @@ function DecorativeShape({ className }: { className: string }) {
 function StopwatchIcon({ className }: { className: string }) {
   return (
     <div className={`absolute select-none ${className}`}>
-      <span className="text-[#00c2cb] text-opacity-15 text-6xl font-light">
+      <span className="text-[#00c2cb] lg:text-opacity-15 text-opacity-[0.07] text-6xl font-light">
         ⏱
       </span>
     </div>
@@ -116,22 +137,22 @@ export function Hero() {
       className="bg-white text-[#152932] md:pt-28 pt-24 pb-24 relative overflow-hidden"
       style={{ minHeight: "90vh" }}
     >
-      <DecorativeShape className="top-72 left-10 opacity-20" />
-      <DecorativeShape className="bottom-10 right-10 opacity-20" />
-      <DecorativeShape className="top-1/4 right-[5%] opacity-10" />
-      <DecorativeShape className="bottom-1/4 left-1/4 opacity-10" />
+      <DecorativeShape className="top-72 left-10 lg:opacity-20 opacity-10" />
+      <DecorativeShape className="bottom-10 right-10 lg:opacity-20 opacity-10" />
+      <DecorativeShape className="top-1/4 right-[5%] lg:opacity-20 opacity-10" />
+      <DecorativeShape className="bottom-1/4 left-1/4 lg:opacity-20 opacity-10" />
 
-      <StopwatchIcon className="top-20 left-20" />
-      <StopwatchIcon className="top-20 right-20" />
-      <StopwatchIcon className="bottom-20 left-20" />
+      <StopwatchIcon className="top-20 left-20 sm:block hidden" />
+      <StopwatchIcon className="top-20 right-20 sm:block hidden" />
+      <StopwatchIcon className="bottom-20 left-24" />
       <StopwatchIcon className="top-1/2 left-1/3 transform -translate-y-1/2" />
       <StopwatchIcon className="top-1/3 right-1/4" />
       <StopwatchIcon className="bottom-1/3 left-1/4" />
       <StopwatchIcon className="top-3/4 right-1/3" />
 
       <div className="container mx-auto px-4 relative z-10">
-        <div className="flex flex-col md:flex-row gap-y-6 items-center justify-between">
-          <div className=" md:block hidden w-1/4 space-y-4 mb-8 md:mb-0">
+        <div className="flex flex-col lg:flex-row gap-y-6 items-center justify-between">
+          <div className=" lg:block hidden w-1/4 space-y-4 mb-8 md:mb-0">
             {sampleCountdowns.slice(0, 4).map((countdown) => (
               <div
                 key={countdown.id}
@@ -144,24 +165,24 @@ export function Hero() {
               </div>
             ))}
           </div>
-          <div className="w-full md:w-1/2 text-center space-y-8">
-            <h1 className="text-[3.8rem] md:text-[5.6rem] font-bold -mb-6 relative">
+          <div className="w-full lg:w-1/2 text-center space-y-8">
+            <h1 className="text-[3.8rem] md:text-[4.8rem] lg:text-[5.2rem] xl:text-[5.6rem] font-bold -mb-6 relative">
               Count<span className="ml-0.5 text-[#00c2cb]">Share</span>
               <StopwatchIcon className="absolute -top-12 right-4 text-9xl" />
             </h1>
-            <p className="text-xl md:text-[1.42rem] mb-8 text-gray-600">
+            <p className="text-xl lg:text-[1.42rem] mb-8 text-gray-600">
               Create, share, and celebrate moments together
             </p>
             <div className="space-x-6">
               <Link href="/create-countdown" passHref>
-                <Button className="bg-[#00c2cb] text-white hover:bg-[#00a7af] transition-colors duration-200 text-lg md:py-[1.40rem] py-5 px-6">
+                <Button className="bg-[#00c2cb] text-white hover:bg-[#00a7af] transition-colors duration-200 text-lg lg:py-[1.40rem] py-5 px-6">
                   Create Countdown
                 </Button>
               </Link>
               <Link href="/countdowns" passHref>
                 <Button
                   variant="outline"
-                  className="text-[#00c2cb] border-[#00c2cb] hover:bg-[#00c2cb] hover:text-white transition-colors duration-200 text-lg md:py-[1.40rem] py-5 px-6"
+                  className="text-[#00c2cb] border-[#00c2cb] hover:bg-[#00c2cb] hover:text-white transition-colors duration-200 text-lg lg:py-[1.40rem] py-5 px-6"
                 >
                   Explore
                 </Button>
@@ -185,7 +206,7 @@ export function Hero() {
               </div>
             </div>
           </div>
-          <div className="w-full md:w-1/4 md:block hidden space-y-4 mt-8 md:mt-0">
+          <div className="w-full lg:w-1/4 md:block hidden space-y-4 mt-8 md:mt-0">
             {sampleCountdowns.slice(4, 8).map((countdown) => (
               <div
                 key={countdown.id}
@@ -198,7 +219,7 @@ export function Hero() {
               </div>
             ))}
           </div>
-          <div className="w-full md:w-1/4 md:hidden block space-y-4 mt-8 md:mt-0">
+          <div className="w-full lg:w-1/4 lg:hidden block space-y-4 mt-8 md:mt-0">
             {sampleCountdowns.slice(5, 8).map((countdown) => (
               <div
                 key={countdown.id}

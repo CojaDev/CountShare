@@ -20,7 +20,9 @@ interface Countdown {
 
 export function CountdownGridHero() {
   const [countdowns, setCountdowns] = useState<Countdown[]>([]);
-  const [currentIndex, setCurrentIndex] = useState(0);
+  const [currentIndexMobile, setCurrentIndexMobile] = useState(0);
+  const [currentIndexTablet, setCurrentIndexTablet] = useState(0);
+  const [currentIndexDesktop, setCurrentIndexDesktop] = useState(0);
 
   useEffect(() => {
     const fetchCountdowns = async () => {
@@ -36,7 +38,27 @@ export function CountdownGridHero() {
           (countdown: any) => countdown.isPublic
         );
 
-        setCountdowns(filtered);
+        // Ensure we have exactly 8 countdowns
+        const finalCountdowns =
+          filtered.length >= 8
+            ? filtered.slice(0, 8)
+            : [...filtered, ...Array(8 - filtered.length).fill(null)].map(
+                (item, index) =>
+                  item || {
+                    _id: `placeholder-${index}`,
+                    name: "Sample Countdown",
+                    description: "This is a sample countdown",
+                    date: new Date(
+                      Date.now() + 1000 * 60 * 60 * 24 * 30
+                    ).toISOString(),
+                    backgroundColor: "#f0f0f0",
+                    textColor: "#333333",
+                    createdBy: "",
+                    creatorName: "Sample User",
+                  }
+              );
+
+        setCountdowns(finalCountdowns);
       } catch (error) {
         console.error("Error fetching countdowns:", error);
       }
@@ -45,54 +67,145 @@ export function CountdownGridHero() {
     fetchCountdowns();
   }, []);
 
+  // Calculate total pages for each screen size
+  const totalPagesMobile = Math.ceil(countdowns.length / 2);
+  const totalPagesTablet = Math.ceil(countdowns.length / 4);
+  const totalPagesDesktop = Math.ceil(countdowns.length / 8);
+
   const nextSlide = () => {
-    setCurrentIndex((prevIndex) => (prevIndex + 1) % 2);
+    setCurrentIndexMobile((prev) => (prev + 1) % totalPagesMobile);
+    setCurrentIndexTablet((prev) => (prev + 1) % totalPagesTablet);
+    setCurrentIndexDesktop((prev) => (prev + 1) % totalPagesDesktop);
   };
 
   const prevSlide = () => {
-    setCurrentIndex((prevIndex) => (prevIndex - 1 + 2) % 2);
+    setCurrentIndexMobile(
+      (prev) => (prev - 1 + totalPagesMobile) % totalPagesMobile
+    );
+    setCurrentIndexTablet(
+      (prev) => (prev - 1 + totalPagesTablet) % totalPagesTablet
+    );
+    setCurrentIndexDesktop(
+      (prev) => (prev - 1 + totalPagesDesktop) % totalPagesDesktop
+    );
   };
 
+  // If no countdowns, show placeholder
+  if (countdowns.length === 0) {
+    return (
+      <section className="py-16 md:py-32 bg-gray-50">
+        <div className="container mx-auto px-4">
+          <h2 className="text-3xl font-bold text-center mb-8 text-gray-800">
+            Featured Countdowns
+          </h2>
+          <div className="flex justify-center items-center h-64">
+            <p className="text-gray-500">Loading featured countdowns...</p>
+          </div>
+        </div>
+      </section>
+    );
+  }
+
   return (
-    <section className="py-32 bg-gray-50  bg-gradient-to-tb">
+    <section className="py-16 md:py-32 bg-gray-50">
       <div className="container mx-auto px-4">
         <h2 className="text-3xl font-bold text-center mb-8 text-gray-800">
           Featured Countdowns
         </h2>
         <div className="relative">
-          <div className="overflow-hidden">
+          {/* Mobile Carousel (1 item per slide) - Only visible on small screens */}
+          <div className="sm:hidden overflow-hidden">
             <div
               className="flex transition-transform duration-300 ease-in-out"
               style={{
-                transform: `translateX(-${currentIndex * 100}%)`,
-                width: "200%",
+                transform: `translateX(-${currentIndexMobile * 100}%)`,
+                width: `${totalPagesMobile * 100}%`,
               }}
             >
-              {[0, 1].map((pageIndex) => (
-                <div
-                  key={pageIndex}
-                  className="w-1/2 flex-shrink-0 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4"
-                >
-                  {countdowns
-                    .slice(pageIndex * 4, (pageIndex + 1) * 4)
-                    .map((countdown: Countdown) => (
-                      <div key={countdown._id}>
-                        <CountdownCard
-                          {...countdown}
-                          onEdit={undefined}
-                          onDelete={undefined}
-                          showActions={false}
-                        />
-                      </div>
-                    ))}
+              {countdowns.map((countdown) => (
+                <div key={countdown._id} className="w-full flex-shrink-0 px-2">
+                  <CountdownCard
+                    {...countdown}
+                    onEdit={undefined}
+                    onDelete={undefined}
+                    showActions={false}
+                  />
                 </div>
               ))}
             </div>
           </div>
+
+          {/* Tablet Carousel (2 items per slide) - Only visible on medium screens */}
+          <div className="hidden sm:block lg:hidden overflow-hidden">
+            <div
+              className="flex transition-transform duration-300 ease-in-out"
+              style={{
+                transform: `translateX(-${currentIndexTablet * 100}%)`,
+                width: `${totalPagesTablet * 100}%`,
+              }}
+            >
+              {Array.from({ length: totalPagesTablet }).map((_, pageIndex) => (
+                <div
+                  key={`tablet-${pageIndex}`}
+                  className="w-full flex-shrink-0"
+                >
+                  <div className="grid grid-cols-2 gap-4">
+                    {countdowns
+                      .slice(pageIndex * 2, (pageIndex + 1) * 2)
+                      .map((countdown) => (
+                        <div key={countdown._id}>
+                          <CountdownCard
+                            {...countdown}
+                            onEdit={undefined}
+                            onDelete={undefined}
+                            showActions={false}
+                          />
+                        </div>
+                      ))}
+                  </div>
+                </div>
+              ))}
+            </div>
+          </div>
+
+          {/* Desktop Carousel (4 items per slide) - Only visible on large screens */}
+          <div className="hidden lg:block overflow-hidden">
+            <div
+              className="flex transition-transform duration-300 ease-in-out"
+              style={{
+                transform: `translateX(-${currentIndexDesktop * 100}%)`,
+                width: `${totalPagesDesktop * 100}%`,
+              }}
+            >
+              {Array.from({ length: totalPagesDesktop }).map((_, pageIndex) => (
+                <div
+                  key={`desktop-${pageIndex}`}
+                  className="w-full flex-shrink-0"
+                >
+                  <div className="grid grid-cols-4 gap-4">
+                    {countdowns
+                      .slice(pageIndex * 4, (pageIndex + 1) * 4)
+                      .map((countdown) => (
+                        <div key={countdown._id} className="w-full">
+                          <CountdownCard
+                            {...countdown}
+                            onEdit={undefined}
+                            onDelete={undefined}
+                            showActions={false}
+                          />
+                        </div>
+                      ))}
+                  </div>
+                </div>
+              ))}
+            </div>
+          </div>
+
+          {/* Navigation buttons */}
           <Button
             variant="outline"
             size="icon"
-            className="absolute top-1/2 left-4 transform -translate-y-1/2 bg-white/80 hover:bg-white"
+            className="absolute top-1/2 -left-2 sm:left-4 transform -translate-y-1/2 bg-white/80 hover:bg-white z-10"
             onClick={prevSlide}
           >
             <ChevronLeft className="h-6 w-6" />
@@ -100,20 +213,49 @@ export function CountdownGridHero() {
           <Button
             variant="outline"
             size="icon"
-            className="absolute top-1/2 right-4 transform -translate-y-1/2 bg-white/80 hover:bg-white"
+            className="absolute top-1/2 -right-2 sm:right-4 transform -translate-y-1/2 bg-white/80 hover:bg-white z-10"
             onClick={nextSlide}
           >
             <ChevronRight className="h-6 w-6" />
           </Button>
         </div>
-        <div className="flex justify-center mt-4">
-          {[0, 1].map((index) => (
+
+        {/* Pagination indicators - different for each screen size */}
+        <div className="sm:hidden flex justify-center mt-6">
+          {Array.from({ length: totalPagesMobile }).map((_, index) => (
             <button
-              key={index}
+              key={`mobile-dot-${index}`}
               className={`h-2 w-8 rounded-full mx-1 ${
-                index === currentIndex ? "bg-[#00c2cb]" : "bg-gray-300"
+                index === currentIndexMobile ? "bg-[#00c2cb]" : "bg-gray-300"
               }`}
-              onClick={() => setCurrentIndex(index)}
+              onClick={() => setCurrentIndexMobile(index)}
+              aria-label={`Go to slide ${index + 1}`}
+            />
+          ))}
+        </div>
+
+        <div className="hidden sm:flex lg:hidden justify-center mt-6">
+          {Array.from({ length: totalPagesTablet }).map((_, index) => (
+            <button
+              key={`tablet-dot-${index}`}
+              className={`h-2 w-8 rounded-full mx-1 ${
+                index === currentIndexTablet ? "bg-[#00c2cb]" : "bg-gray-300"
+              }`}
+              onClick={() => setCurrentIndexTablet(index)}
+              aria-label={`Go to slide ${index + 1}`}
+            />
+          ))}
+        </div>
+
+        <div className="hidden lg:flex justify-center mt-6">
+          {Array.from({ length: totalPagesDesktop }).map((_, index) => (
+            <button
+              key={`desktop-dot-${index}`}
+              className={`h-2 w-8 rounded-full mx-1 ${
+                index === currentIndexDesktop ? "bg-[#00c2cb]" : "bg-gray-300"
+              }`}
+              onClick={() => setCurrentIndexDesktop(index)}
+              aria-label={`Go to slide ${index + 1}`}
             />
           ))}
         </div>
