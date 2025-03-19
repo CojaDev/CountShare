@@ -42,6 +42,7 @@ export async function POST(req: Request) {
       isPublic: countdownData.isPublic === "true",
       showWatermark: countdownData.showWatermark === "true",
       createdBy: countdownData.createdBy,
+      comments: [],
     });
 
     await newCountdown.save();

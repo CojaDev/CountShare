@@ -11,9 +11,11 @@ interface ShareButtonProps extends ButtonProps {
   types?: "countdowns" | "profile";
   variant?: "default" | "outline" | "ghost";
   size?: "default" | "sm" | "lg" | "icon";
+  children?: React.ReactNode;
 }
 
 export function ShareButton({
+  children,
   countdownId,
   countdownName,
   types = "countdowns",
@@ -38,7 +40,7 @@ export function ShareButton({
         ) : (
           <>
             <Share2 className="h-4 w-4 mr-2" />
-            Share
+            Share {children}
           </>
         )}
       </Button>

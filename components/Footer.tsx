@@ -1,10 +1,5 @@
 import Link from "next/link";
-import {
-  Facebook,
-  Twitter,
-  Instagram,
-  GitlabIcon as GitHub,
-} from "lucide-react";
+import { Facebook, Twitter, Instagram } from "lucide-react";
 import Image from "next/image";
 
 export function Footer() {
@@ -113,7 +108,18 @@ export function Footer() {
                 href="#"
                 className="text-gray-400 hover:text-[#00c2cb] transition-colors"
               >
-                <GitHub size={20} />
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  width="20"
+                  height="20"
+                  transform="scale(1.8)"
+                  viewBox="0 0 16 16"
+                >
+                  <path
+                    fill="currentColor"
+                    d="M 8 4 L 8 9.5 C 8 10.33 7.33 11 6.5 11 C 5.67 11 5 10.33 5 9.5 C 5 8.67 5.67 8 6.5 8 C 6.68 8 6.84 8.0298438 7 8.0898438 L 7 7.0507812 C 6.84 7.0207812 6.67 7 6.5 7 C 5.12 7 4 8.12 4 9.5 C 4 10.88 5.12 12 6.5 12 C 7.88 12 9 10.88 9 9.5 L 9 6.2109375 C 9.165316 6.3496799 9.2903403 6.5561561 9.4804688 6.6425781 C 10.313461 7.021211 11.25 7 12 7 L 12 6 C 11.25 6 10.436539 5.978789 9.8945312 5.7324219 C 9.3525237 5.4860548 9 5.1166667 9 4 L 8 4 z"
+                  />
+                </svg>
               </a>
             </div>
           </div>

@@ -70,11 +70,13 @@ export function ProfileHeader({
               <ShareButton
                 countdownId={user.id}
                 countdownName={user.name}
-                variant="ghost"
+                variant="outline"
                 types="profile"
-                size="icon"
-                className="text-gray-500 hover:text-[#00c2cb]"
-              />
+                size="default"
+                className="text-black hover:text-[#00c2cb]"
+              >
+                Profile
+              </ShareButton>
             )}
           </div>
         </div>

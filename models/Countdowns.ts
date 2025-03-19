@@ -1,7 +1,58 @@
-import mongoose from 'mongoose';
+import mongoose from "mongoose";
 
 const { Schema } = mongoose;
 
+// Comment Schema (supports nested replies)
+const CommentSchema = new Schema({
+  id: {
+    type: String,
+    required: true,
+    trim: true,
+  },
+  name: {
+    type: String,
+    required: true,
+    trim: true,
+  },
+  text: {
+    type: String,
+    required: true,
+    trim: true,
+  },
+  date: {
+    type: Date,
+    default: Date.now,
+  },
+  userImage: {
+    type: String,
+    required: false,
+    trim: true,
+  },
+  userId: {
+    type: String,
+    required: false,
+    trim: true,
+  },
+  likes: {
+    type: Number,
+    default: 0,
+  },
+  // Store array of user IDs who liked this comment
+  likedBy: {
+    type: [String],
+    default: [],
+  },
+});
+
+// Add replies as a subdocument after schema definition to avoid "this" reference issues
+CommentSchema.add({
+  replies: {
+    type: [CommentSchema],
+    default: [],
+  },
+});
+
+// Countdown Schema
 const CountdownSchema = new Schema({
   name: {
     type: String,
@@ -15,17 +66,17 @@ const CountdownSchema = new Schema({
   font: {
     type: String,
     required: true,
-    default: 'Arial',
+    default: "Arial",
   },
   textColor: {
     type: String,
     required: true,
-    default: '#000000',
+    default: "#000000",
   },
   backgroundColor: {
     type: String,
     required: true,
-    default: '#ffffff',
+    default: "#ffffff",
   },
   backgroundImage: {
     type: String,
@@ -64,7 +115,7 @@ const CountdownSchema = new Schema({
   theme: {
     type: String,
     required: true,
-    default: 'light',
+    default: "light",
   },
   customCSS: {
     type: String,
@@ -72,7 +123,7 @@ const CountdownSchema = new Schema({
   },
   createdBy: {
     type: Schema.Types.ObjectId,
-    ref: 'Users',
+    ref: "Users",
     required: true,
   },
   createdAt: {
@@ -89,8 +140,9 @@ const CountdownSchema = new Schema({
     required: true,
     default: true,
   },
+  comments: [CommentSchema], // Uses the CommentSchema to store comments & replies
 });
 
-const Countdowns = mongoose.models.Countdowns || mongoose.model('Countdowns', CountdownSchema);
+const Countdowns =
+  mongoose.models.Countdowns || mongoose.model("Countdowns", CountdownSchema);
 export default Countdowns;
-
