@@ -35,12 +35,12 @@ interface CountdownPreviewProps {
   createdBy: {
     id: string;
     name: string;
-    image: string;
+    image?: string;
   };
   onFullscreen?: () => void;
   isFullPage?: boolean;
   isCard?: boolean;
-  _id: string;
+  _id?: string;
   comments?: Comment[];
   currentUser?: UserTypes;
 }

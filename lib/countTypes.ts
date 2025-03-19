@@ -25,6 +25,6 @@ export interface CountdownData {
   isPublic: boolean;
   customBackgroundImage: File | null;
   showWatermark: boolean;
-  comments: Comments[];
-  _id: string;
+  comments?: Comments[];
+  _id?: string;
 }

@@ -45,6 +45,8 @@ export default function CreateCountdown() {
     isPublic: true,
     customBackgroundImage: null,
     showWatermark: true,
+    comments: [],
+    _id: "",
   });
   const [isFullscreenPreview, setIsFullscreenPreview] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
