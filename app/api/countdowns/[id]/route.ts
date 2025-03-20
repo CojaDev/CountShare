@@ -1,4 +1,4 @@
-import { type NextRequest, NextResponse } from "next/server";
+import { NextResponse } from "next/server";
 import { connectToDatabase } from "@/lib/db";
 import Countdowns from "@/models/Countdowns";
 
@@ -48,6 +48,9 @@ export async function PUT(req: Request, { params }: any) {
         editedCountdown[key] = value;
       }
     }
+
+    console.log("Edited countdown data:", editedCountdown);
+    console.log("Countdown ID:", params.id);
 
     const updatedCountdown = await Countdowns.findByIdAndUpdate(
       params.id,

@@ -28,6 +28,23 @@ import { toast } from "react-hot-toast";
 import type { CountdownData } from "@/lib/countTypes";
 import Loader from "@/components/Loader";
 
+// Helper function to format date for datetime-local input
+function formatDateForInput(dateString: string): string {
+  if (!dateString) return "";
+
+  try {
+    const date = new Date(dateString);
+    // Check if date is valid
+    if (isNaN(date.getTime())) return "";
+
+    // Format to YYYY-MM-DDThh:mm
+    return date.toISOString().slice(0, 16);
+  } catch (error) {
+    console.error("Error formatting date:", error);
+    return "";
+  }
+}
+
 export default function EditCountdown() {
   const [countdownData, setCountdownData] = useState<CountdownData>({
     name: "",
@@ -47,7 +64,6 @@ export default function EditCountdown() {
     customBackgroundImage: null,
     showWatermark: true,
     comments: [],
-    _id: "",
   });
   const [isFullscreenPreview, setIsFullscreenPreview] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
@@ -94,7 +110,7 @@ export default function EditCountdown() {
       const formData = new FormData();
 
       Object.entries(countdownData).forEach(([key, value]) => {
-        if (key !== "customBackgroundImage") {
+        if (key !== "customBackgroundImage" && key !== "comments") {
           formData.append(key, String(value));
         }
       });
@@ -110,11 +126,16 @@ export default function EditCountdown() {
         toast.success("Countdown updated successfully!");
         router.push(`/countdowns/${countdownId}`);
       } else {
-        throw new Error("Failed to update countdown");
+        const errorData = await response.json();
+        throw new Error(errorData.error || "Failed to update countdown");
       }
     } catch (error) {
       console.error("Error updating countdown:", error);
-      toast.error("Failed to update countdown. Please try again.");
+      toast.error(
+        `Failed to update countdown: ${
+          error instanceof Error ? error.message : "Unknown error"
+        }`
+      );
     } finally {
       setIsSubmitting(false);
     }
@@ -184,6 +205,13 @@ export default function EditCountdown() {
 
   const isPremium = user?.premium || false;
 
+  if ((isLoading && !session) || isLoading) {
+    return (
+      <Layout>
+        <Loader />
+      </Layout>
+    );
+  }
   if (!session) {
     return (
       <Layout>
@@ -199,13 +227,8 @@ export default function EditCountdown() {
     );
   }
 
-  if (isLoading) {
-    return (
-      <Layout>
-        <Loader />
-      </Layout>
-    );
-  }
+  // Format the date for the input
+  const formattedDate = formatDateForInput(countdownData.date);
 
   return (
     <Layout>
@@ -237,7 +260,7 @@ export default function EditCountdown() {
                     type="datetime-local"
                     id="date"
                     name="date"
-                    value={countdownData.date}
+                    value={formattedDate}
                     onChange={handleChange}
                     required
                     className="mt-1"

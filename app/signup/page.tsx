@@ -11,6 +11,7 @@ import { Alert, AlertDescription } from "@/components/ui/alert";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Loader2 } from "lucide-react";
 import toast from "react-hot-toast";
+import Layout from "@/components/Layout";
 
 export default function SignupPage() {
   const [step, setStep] = useState(1);
@@ -106,139 +107,144 @@ export default function SignupPage() {
   };
 
   return (
-    <div className="flex items-center justify-center min-h-screen bg-gray-100">
-      <div className="px-8 py-6 mt-4 text-left bg-white shadow-lg rounded-lg w-full max-w-md">
-        <h3 className="text-2xl font-bold text-center">Create an account</h3>
-        {error && (
-          <Alert variant="destructive" className="mt-4">
-            <AlertDescription>{error}</AlertDescription>
-          </Alert>
-        )}
-        <form onSubmit={handleSubmit} className="mt-4">
-          {step === 1 ? (
-            <div className="space-y-4">
-              <div>
-                <label
-                  className="block text-sm font-medium text-gray-700"
-                  htmlFor="email"
-                >
-                  Email
-                </label>
-                <Input
-                  type="email"
-                  placeholder="Email"
-                  id="email"
-                  value={email}
-                  onChange={(e) => setEmail(e.target.value)}
-                  required
-                  className="mt-1"
-                />
-              </div>
-              <div>
-                <label
-                  className="block text-sm font-medium text-gray-700"
-                  htmlFor="password"
-                >
-                  Password
-                </label>
-                <Input
-                  type="password"
-                  placeholder="Password"
-                  id="password"
-                  value={password}
-                  onChange={(e) => setPassword(e.target.value)}
-                  required
-                  className="mt-1"
-                />
-              </div>
-              <Button type="submit" className="w-full bg-[#00c2cb] text-white">
-                Next
-              </Button>
-            </div>
-          ) : (
-            <div className="space-y-4">
-              <div>
-                <label
-                  className="block text-sm font-medium text-gray-700"
-                  htmlFor="name"
-                >
-                  Name
-                </label>
-                <Input
-                  type="text"
-                  placeholder="Name"
-                  id="name"
-                  value={name}
-                  onChange={(e) => setName(e.target.value)}
-                  required
-                  className="mt-1"
-                />
-              </div>
-              <div>
-                <label
-                  className="block text-sm font-medium text-gray-700"
-                  htmlFor="bio"
-                >
-                  Bio
-                </label>
-                <Textarea
-                  placeholder="Tell us about yourself"
-                  id="bio"
-                  value={bio}
-                  onChange={(e) => setBio(e.target.value)}
-                  className="mt-1"
-                />
-              </div>
-              <div>
-                <label className="block text-sm font-medium text-gray-700">
-                  Profile Picture
-                </label>
-                <div className="mt-1 flex items-center space-x-4">
-                  <Avatar className="h-12 w-12">
-                    <AvatarImage src={pfp} alt="Profile picture" />
-                    <AvatarFallback>
-                      {name ? name.charAt(0).toUpperCase() : "U"}
-                    </AvatarFallback>
-                  </Avatar>
+    <Layout>
+      <div className="flex items-center justify-center min-h-[90vh] bg-gray-100">
+        <div className="px-8 py-6 mt-4 text-left bg-white shadow-lg rounded-lg w-full max-w-md">
+          <h3 className="text-2xl font-bold text-center">Create an account</h3>
+          {error && (
+            <Alert variant="destructive" className="mt-4">
+              <AlertDescription>{error}</AlertDescription>
+            </Alert>
+          )}
+          <form onSubmit={handleSubmit} className="mt-4">
+            {step === 1 ? (
+              <div className="space-y-4">
+                <div>
+                  <label
+                    className="block text-sm font-medium text-gray-700"
+                    htmlFor="email"
+                  >
+                    Email
+                  </label>
                   <Input
-                    type="file"
-                    accept="image/*"
-                    onChange={handleImageUpload}
-                    className="flex-1"
-                    disabled={isImageUploading}
+                    type="email"
+                    placeholder="Email"
+                    id="email"
+                    value={email}
+                    onChange={(e) => setEmail(e.target.value)}
+                    required
+                    className="mt-1"
                   />
-                  {isImageUploading && (
-                    <Loader2 className="h-4 w-4 animate-spin" />
-                  )}
                 </div>
+                <div>
+                  <label
+                    className="block text-sm font-medium text-gray-700"
+                    htmlFor="password"
+                  >
+                    Password
+                  </label>
+                  <Input
+                    type="password"
+                    placeholder="Password"
+                    id="password"
+                    value={password}
+                    onChange={(e) => setPassword(e.target.value)}
+                    required
+                    className="mt-1"
+                  />
+                </div>
+                <Button
+                  type="submit"
+                  className="w-full bg-[#00c2cb] text-white"
+                >
+                  Next
+                </Button>
               </div>
+            ) : (
+              <div className="space-y-4">
+                <div>
+                  <label
+                    className="block text-sm font-medium text-gray-700"
+                    htmlFor="name"
+                  >
+                    Name
+                  </label>
+                  <Input
+                    type="text"
+                    placeholder="Name"
+                    id="name"
+                    value={name}
+                    onChange={(e) => setName(e.target.value)}
+                    required
+                    className="mt-1"
+                  />
+                </div>
+                <div>
+                  <label
+                    className="block text-sm font-medium text-gray-700"
+                    htmlFor="bio"
+                  >
+                    Bio
+                  </label>
+                  <Textarea
+                    placeholder="Tell us about yourself"
+                    id="bio"
+                    value={bio}
+                    onChange={(e) => setBio(e.target.value)}
+                    className="mt-1"
+                  />
+                </div>
+                <div>
+                  <label className="block text-sm font-medium text-gray-700">
+                    Profile Picture
+                  </label>
+                  <div className="mt-1 flex items-center space-x-4">
+                    <Avatar className="h-12 w-12">
+                      <AvatarImage src={pfp} alt="Profile picture" />
+                      <AvatarFallback>
+                        {name ? name.charAt(0).toUpperCase() : "U"}
+                      </AvatarFallback>
+                    </Avatar>
+                    <Input
+                      type="file"
+                      accept="image/*"
+                      onChange={handleImageUpload}
+                      className="flex-1"
+                      disabled={isImageUploading}
+                    />
+                    {isImageUploading && (
+                      <Loader2 className="h-4 w-4 animate-spin" />
+                    )}
+                  </div>
+                </div>
+                <Button
+                  type="submit"
+                  className="w-full bg-[#00c2cb] text-white"
+                  disabled={isLoading || isImageUploading}
+                >
+                  {isLoading ? "Signing up..." : "Sign Up"}
+                </Button>
+              </div>
+            )}
+          </form>
+          {step === 1 && (
+            <div className="mt-4">
               <Button
-                type="submit"
-                className="w-full bg-[#00c2cb] text-white"
-                disabled={isLoading || isImageUploading}
+                onClick={handleGoogleSignIn}
+                className="w-full bg-red-600 text-white"
               >
-                {isLoading ? "Signing up..." : "Sign Up"}
+                Sign up with Google
               </Button>
             </div>
           )}
-        </form>
-        {step === 1 && (
-          <div className="mt-4">
-            <Button
-              onClick={handleGoogleSignIn}
-              className="w-full bg-red-600 text-white"
-            >
-              Sign up with Google
-            </Button>
-          </div>
-        )}
-        <p className="mt-4 text-center text-sm text-gray-600">
-          Already have an account?{" "}
-          <Link href="/login" className="text-[#00c2cb] hover:underline">
-            Login
-          </Link>
-        </p>
+          <p className="mt-4 text-center text-sm text-gray-600">
+            Already have an account?{" "}
+            <Link href="/login" className="text-[#00c2cb] hover:underline">
+              Login
+            </Link>
+          </p>
+        </div>
       </div>
-    </div>
+    </Layout>
   );
 }
