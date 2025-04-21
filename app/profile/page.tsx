@@ -86,21 +86,14 @@ export default function ProfilePage() {
       });
       if (response.ok) {
         signOut();
-        toast({
-          title: "Account deleted",
-          description: "Your account has been successfully deleted.",
-        });
+        toast.success("Your account has been successfully deleted.");
         router.push("/");
       } else {
         throw new Error(`HTTP error! status: ${response.status}`);
       }
     } catch (error) {
       console.error("Error deleting account:", error);
-      toast({
-        title: "Error",
-        description: "Failed to delete account. Please try again.",
-        variant: "destructive",
-      });
+      toast.error("Failed to delete account. Please try again.");
     }
   };
 
