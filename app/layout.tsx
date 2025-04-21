@@ -79,6 +79,12 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en">
+      <head>
+        <meta
+          name="google-site-verification"
+          content="PcVXkY3TbcO5DZLopYqYf5uz2Jgk8bEt2-W6E1Fzupw"
+        />
+      </head>
       <body
         className={`${poppins.variable} ${geistSans.variable} ${geistMono.variable} font-sans antialiased`}
       >

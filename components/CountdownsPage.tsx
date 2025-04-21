@@ -2,7 +2,7 @@
 
 import type React from "react";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, useCallback } from "react";
 import { useSearchParams, useRouter } from "next/navigation";
 import { Input } from "@/components/ui/input";
 import {
@@ -13,9 +13,9 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { CountdownCard } from "@/components/CountdownCard";
-import Loader from "@/components/Loader";
 import { Pagination } from "@/components/ui/pagination";
 import { Search, SlidersHorizontal } from "lucide-react";
+import { Skeleton } from "./ui/skeleton";
 
 interface Countdown {
   _id: string;
@@ -30,99 +30,75 @@ interface Countdown {
   isPublic: boolean;
 }
 
+interface FetchCountdownsResponse {
+  countdowns: Countdown[];
+  total: number;
+}
+
 const CountdownsPage = () => {
   const searchParams = useSearchParams();
   const router = useRouter();
   const [countdowns, setCountdowns] = useState<Countdown[]>([]);
-  const [filteredCountdowns, setFilteredCountdowns] = useState<Countdown[]>([]);
   const [currentPage, setCurrentPage] = useState(1);
   const [searchTerm, setSearchTerm] = useState(
     searchParams.get("search") || ""
   );
-  const [sortBy, setSortBy] = useState("date");
-  const [sortOrder, setSortOrder] = useState("asc");
+  const [sortBy, setSortBy] = useState(searchParams.get("sortBy") || "date");
+  const [sortOrder, setSortOrder] = useState(
+    searchParams.get("sortOrder") || "asc"
+  );
   const [loading, setIsLoading] = useState(true);
+  const [totalItems, setTotalItems] = useState(0);
   const itemsPerPage = 12;
 
-  useEffect(() => {
-    fetchCountdowns();
-  }, []);
-
-  useEffect(() => {
-    filterAndSortCountdowns();
-  }, [countdowns, searchTerm, sortBy, sortOrder]);
-
-  useEffect(() => {
-    // Update URL when search term changes
-    const newSearchParams = new URLSearchParams(searchParams);
-    if (searchTerm) {
-      newSearchParams.set("search", searchTerm);
-    } else {
-      newSearchParams.delete("search");
-    }
-    router.push(`/countdowns?${newSearchParams.toString()}`);
-  }, [searchTerm, router, searchParams]);
-
-  const fetchCountdowns = async () => {
+  // Memoize the fetchCountdowns function to prevent unnecessary re-renders
+  const fetchCountdowns = useCallback(async () => {
+    setIsLoading(true);
     try {
-      const response = await fetch("/api/countdowns");
+      // Build query parameters for server-side filtering, sorting, and pagination
+      const queryParams = new URLSearchParams({
+        page: currentPage.toString(),
+        limit: itemsPerPage.toString(),
+        sortBy,
+        sortOrder,
+        ...(searchTerm && { search: searchTerm }),
+      });
+
+      const response = await fetch(`/api/countdowns/paginated?${queryParams}`);
+
       if (!response.ok) {
         throw new Error("Failed to fetch countdowns");
       }
-      const fetchedCountdowns: Countdown[] = await response.json();
 
-      // Fetch creator names for each countdown
-      const countdownsWithCreatorNames = await Promise.all(
-        fetchedCountdowns.map(async (countdown) => {
-          const creatorResponse = await fetch(
-            `/api/users/${countdown.createdBy}`
-          );
-          const creatorData = await creatorResponse.json();
-          return { ...countdown, creatorName: creatorData.name };
-        })
-      );
-
-      // Shuffle the countdowns array
-      countdownsWithCreatorNames.sort(() => Math.random() - 0.5);
-
-      setCountdowns(countdownsWithCreatorNames);
-      setIsLoading(false);
+      const data: FetchCountdownsResponse = await response.json();
+      setCountdowns(data.countdowns);
+      setTotalItems(data.total);
     } catch (error) {
       console.error("Error fetching countdowns:", error);
+    } finally {
       setIsLoading(false);
     }
-  };
+  }, [currentPage, searchTerm, sortBy, sortOrder]);
 
-  const filterAndSortCountdowns = () => {
-    const now = new Date().getTime(); // Get current timestamp
+  useEffect(() => {
+    fetchCountdowns();
+  }, [fetchCountdowns]);
 
-    const filtered = countdowns
-      .filter(
-        (countdown) =>
-          countdown.isPublic && // Only public countdowns
-          new Date(countdown.date).getTime() > now && // Remove expired countdowns
-          (countdown.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
-            countdown.description
-              .toLowerCase()
-              .includes(searchTerm.toLowerCase()))
-      )
-      .sort((a, b) => {
-        if (sortBy === "name") {
-          return sortOrder === "asc"
-            ? a.name.localeCompare(b.name)
-            : b.name.localeCompare(a.name);
-        } else {
-          return sortOrder === "asc"
-            ? new Date(a.date).getTime() - new Date(b.date).getTime()
-            : new Date(b.date).getTime() - new Date(a.date).getTime();
-        }
-      });
+  useEffect(() => {
+    // Update URL when search or sort parameters change
+    const newSearchParams = new URLSearchParams();
+    if (searchTerm) newSearchParams.set("search", searchTerm);
+    if (sortBy !== "date") newSearchParams.set("sortBy", sortBy);
+    if (sortOrder !== "asc") newSearchParams.set("sortOrder", sortOrder);
+    if (currentPage > 1) newSearchParams.set("page", currentPage.toString());
 
-    setFilteredCountdowns(filtered);
-  };
+    router.push(`/countdowns?${newSearchParams.toString()}`);
+  }, [searchTerm, sortBy, sortOrder, currentPage, router]);
 
   const handlePageChange = (page: number) => {
     setCurrentPage(page);
+    // Scroll to top when changing pages
+    window.scrollTo({ top: 0, behavior: "smooth" });
   };
 
   const handleSearchChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -130,14 +106,15 @@ const CountdownsPage = () => {
     setCurrentPage(1); // Reset to first page when search changes
   };
 
-  const paginatedCountdowns = filteredCountdowns.slice(
-    (currentPage - 1) * itemsPerPage,
-    currentPage * itemsPerPage
-  );
+  const handleSortByChange = (value: string) => {
+    setSortBy(value);
+    setCurrentPage(1);
+  };
 
-  if (loading) {
-    return <Loader />;
-  }
+  const handleSortOrderChange = (value: string) => {
+    setSortOrder(value);
+    setCurrentPage(1);
+  };
 
   return (
     <div className="container mx-auto px-4 py-10">
@@ -160,7 +137,7 @@ const CountdownsPage = () => {
         </div>
         <div className="flex items-center space-x-4 w-full md:w-auto">
           <SlidersHorizontal className="text-gray-600" size={20} />
-          <Select value={sortBy} onValueChange={(value) => setSortBy(value)}>
+          <Select value={sortBy} onValueChange={handleSortByChange}>
             <SelectTrigger className="w-[120px]">
               <SelectValue placeholder="Sort by" />
             </SelectTrigger>
@@ -169,10 +146,7 @@ const CountdownsPage = () => {
               <SelectItem value="name">Name</SelectItem>
             </SelectContent>
           </Select>
-          <Select
-            value={sortOrder}
-            onValueChange={(value) => setSortOrder(value)}
-          >
+          <Select value={sortOrder} onValueChange={handleSortOrderChange}>
             <SelectTrigger className="w-[120px]">
               <SelectValue placeholder="Order" />
             </SelectTrigger>
@@ -183,24 +157,36 @@ const CountdownsPage = () => {
           </Select>
         </div>
       </div>
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
-        {paginatedCountdowns.map((countdown) => (
-          <CountdownCard
-            key={countdown._id}
-            {...countdown}
-            showActions={false}
-          />
-        ))}
-      </div>
-      {filteredCountdowns.length === 0 && (
-        <div className="text-center text-gray-600 mt-8">
-          No countdowns found. Try adjusting your search or filters.
+
+      {loading ? (
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
+          {Array.from({ length: itemsPerPage }).map((_, index) => (
+            <CountdownCardSkeleton key={index} />
+          ))}
         </div>
+      ) : (
+        <>
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
+            {countdowns.map((countdown) => (
+              <CountdownCard
+                key={countdown._id}
+                {...countdown}
+                showActions={false}
+              />
+            ))}
+          </div>
+          {countdowns.length === 0 && (
+            <div className="text-center text-gray-600 mt-8">
+              No countdowns found. Try adjusting your search or filters.
+            </div>
+          )}
+        </>
       )}
+
       <div className="mt-12 flex justify-center">
         <Pagination
           currentPage={currentPage}
-          totalItems={filteredCountdowns.length}
+          totalItems={totalItems}
           itemsPerPage={itemsPerPage}
           onPageChange={handlePageChange}
         />
@@ -208,5 +194,22 @@ const CountdownsPage = () => {
     </div>
   );
 };
+
+// Skeleton loader for countdown cards
+const CountdownCardSkeleton = () => (
+  <div className="w-full bg-white rounded-xl overflow-hidden shadow-md border border-gray-200 animate-pulse">
+    <div className="h-48 bg-gray-200"></div>
+    <div className="p-4">
+      <Skeleton className="h-6 w-3/4 mb-3" />
+      <div className="flex justify-between items-center mb-3">
+        <Skeleton className="h-4 w-1/3" />
+        <Skeleton className="h-4 w-1/4" />
+      </div>
+      <div className="flex justify-end">
+        <Skeleton className="h-8 w-8 rounded-full" />
+      </div>
+    </div>
+  </div>
+);
 
 export default CountdownsPage;
